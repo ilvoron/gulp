@@ -1,0 +1,8 @@
+//Mixins file
+mixin icon(name, modificator)
+	if modificator == ''
+		svg(class='icon__' + name)
+			use(xlink:href='#icon-' + name)
+	else
+		svg(class='icon__' + name + ' icon__' + name + '_' + modificator)
+			use(xlink:href='#icon-' + name)
