@@ -73,7 +73,7 @@ let toDeleteDestWithoutImg = toDeleteDestOnlyImg;
 /*-----------*/
 
 function pugCompilePart1() {
-	return src(['app/pug/**/*.pug', '!app/pug/_mixins.pug'])
+	return src(['app/pug/**/*.pug', '!app/pug/_dev.pug'])
 		.pipe(plumber())
 		.pipe(cache('pugCompiling'))
 		.pipe(pug())
@@ -91,7 +91,7 @@ function pugCompilePart2() {
 }
 
 function sassCompile() {
-	return src(['app/sass/**/*.sass', '!app/sass/_mixins.sass'])
+	return src(['app/sass/**/*.sass', '!app/sass/_dev.sass'])
 		.pipe(plumber())
 		.pipe(cache('sassCompiling'))
 		.pipe(sass().on('error', sass.logError))
@@ -217,7 +217,7 @@ function watcher() {
 
 function buildPart1() {
 	log(chalk.cyan('Recompiling PUG...'));
-	return src(['app/pug/**/*.pug', '!app/pug/_mixins.pug'])
+	return src(['app/pug/**/*.pug', '!app/pug/_dev.pug'])
 		.pipe(pug())
 		.pipe(htmlmin())
 		.pipe(dest('dest/pages'));
@@ -233,7 +233,7 @@ function buildPart2() {
 
 function buildPart3() {
 	log(chalk.cyan('Recompiling SASS...'));
-	return src(['app/sass/**/*.sass', '!app/sass/_mixins.sass'])
+	return src(['app/sass/**/*.sass', '!app/sass/_dev.sass'])
 		.pipe(sass().on('error', sass.logError))
 		.pipe(autoprefixer(['last 10 versions']))
 		.pipe(concat('style.min.css'))
