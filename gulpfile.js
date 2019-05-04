@@ -390,5 +390,5 @@ exports.build               = series(clearDest, build, buildPart7, buildPart8, b
 exports.buildWithoutImg     = series(clearDestWithoutImg, build);                           // Build project without compress images
 exports.buildOnlyImg        = series(clearDestOnlyImg, buildPart7, buildPart8, buildPart9); // Only compress images
 
-// As default just development begins
+// As default development mode starts
 exports.default = series(clearAll, sassCompile, pugCompile, concatCss, concatJs, createSprite, watcher);
