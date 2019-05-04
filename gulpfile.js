@@ -379,11 +379,11 @@ exports.createSprite = createSprite; // Create SVG sprite
 exports.liveReload   = liveReload;   // Initializing browser synchronization
 
 exports.clearCache          = clearCache;          // Clears the cache
-exports.clearApp            = clearApp;            // Deleting unnecessary (or compiled) files and folders in "app" folder
+exports.clearApp            = clearApp;            // Deleting unnecessary files and folders in "app" folder
 exports.clearDest           = clearDest;           // Delete "dest" folder
 exports.clearDestWithoutImg = clearDestWithoutImg; // Delete "dest" folder without deleting images
 exports.clearDestOnlyImg    = clearDestOnlyImg;    // In "dest" folder delete only images
-exports.clearAll            = clearAll;            // Deleting unnecessary (or compiled) files and folders in "app" folder. Delete "dest" folder. Clears the cache
+exports.clearAll            = clearAll;            // Deleting unnecessary files and folders in "app" folder. Delete "dest" folder. Clears the cache
 exports.watcher             = watcher;             // Initializing watcher
 
 exports.build               = series(clearDest, build, buildPart7, buildPart8, buildPart9); // Build project and compress images
