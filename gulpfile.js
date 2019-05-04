@@ -381,8 +381,8 @@ exports.liveReload   = liveReload;   // Initializing browser synchronization
 exports.clearCache          = clearCache;          // Clears the cache
 exports.clearApp            = clearApp;            // Deleting unnecessary files and folders in "app" folder
 exports.clearDest           = clearDest;           // Delete "dest" folder
-exports.clearDestWithoutImg = clearDestWithoutImg; // Delete "dest" folder without deleting images
-exports.clearDestOnlyImg    = clearDestOnlyImg;    // In "dest" folder delete only images
+exports.clearDestWithoutImg = clearDestWithoutImg; // In "dest" folder delete all without images ("img")
+exports.clearDestOnlyImg    = clearDestOnlyImg;    // In "dest" folder delete only images ("img")
 exports.clearAll            = clearAll;            // Deleting unnecessary files and folders in "app" folder. Delete "dest" folder. Clears the cache
 exports.watcher             = watcher;             // Initializing watcher
 
