@@ -10,4 +10,4 @@ mixin icon(name, modificators)
 	else
 		- function modificatorsToClasses(elementName, modificatorsArray) { let ClassesString = ''; for (var ind = 0; ind < modificatorsArray.length; ind++) { ClassesString = ClassesString + ' icon__' + elementName + '_' + modificatorsArray[ind]; }; return ClassesString; };
 		svg(class='icon__' + name + modificatorsToClasses(name, modificators))
-		use(xlink:href='#icon-' + name)
+			use(xlink:href='#icon-' + name)
