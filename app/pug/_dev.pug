@@ -1,8 +1,13 @@
 //Development file
-mixin icon(name, modificator)
-	if modificator == ''
+
+//Inject SVG into page
+//name - file name
+//modificators - BEM methodology
+mixin icon(name, modificators)
+	if modificators.length == 0
 		svg(class='icon__' + name)
 			use(xlink:href='#icon-' + name)
 	else
-		svg(class='icon__' + name + ' icon__' + name + '_' + modificator)
-			use(xlink:href='#icon-' + name)
+		- function modificatorsToClasses(elementName, modificatorsArray) { let ClassesString = ''; for (var ind = 0; ind < modificatorsArray.length; ind++) { ClassesString = ClassesString + ' icon__' + elementName + '_' + modificatorsArray[ind]; }; return ClassesString; };
+		svg(class='icon__' + name + modificatorsToClasses(name, modificators))
+		use(xlink:href='#icon-' + name)
