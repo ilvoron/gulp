@@ -26,6 +26,7 @@ const pngquant = require('imagemin-pngquant');   // https://github.com/imagemin/
 const mozjpeg  = require('imagemin-mozjpeg');    // https://github.com/imagemin/imagemin-mozjpeg
 const zopfli   = require('imagemin-zopfli');     // https://github.com/imagemin/imagemin-zopfli
 const svgmin   = require('gulp-svgmin');         // https://github.com/ben-eb/gulp-svgmin
+const cheerio  = require('gulp-cheerio');        // https://github.com/knpwrs/gulp-cheerio
 const strip    = require('gulp-strip-comments'); // https://github.com/RnbWd/gulp-strip-comments
 
 // Optimization
