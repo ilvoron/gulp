@@ -62,8 +62,8 @@
 - `createSprite` - минифицирует и объединяет все `.svg` файлы, находяещиеся в папке `..app/img`, в один файл `..app/img/sprite.svg` (он автоматически инжектится в страницу, в файле `../app/pug/_dev.pug` есть миксин для вставки SVG)
    - `+icon(name, modificators)` - вставить SVG, где `icon` - имя файла, `modificators` - массив модификаторов (см. [БЭМ](https://ru.bem.info "БЭМ"))
    - `+icon('hamburger', [])` - вставит `<svg class="icon__hamburger"><use xlink:href="#icon-hamburger"></use></svg>`
-   - `+icon('hamburger', ['red', 'light'])` - вставит `<svg class="icon__hamburger icon__hamburger_red icon__hamburger_light"><use xlink:href="#icon-hamburger"></use></svg>`
-   - `+icon('hamburger', ['green', 'size_big'])` - вставит `<svg class="icon__hamburger icon__hamburger_green icon__hamburger_size_big"><use xlink:href="#icon-hamburger"></use></svg>`
+   - `+icon('school', ['red', 'light'])` - вставит `<svg class="icon__school icon__school_red icon__school_light"><use xlink:href="#icon-hamburger"></use></svg>`
+   - `+icon('facebook', ['green', 'size_big'])` - вставит `<svg class="icon__facebook icon__facebook_green icon__facebook_size_big"><use xlink:href="#icon-hamburger"></use></svg>`
 - `liveReload` - инициализация локального сервера`
 - `clearCache` - очистка кэша в памяти (см. [gulp-cached](https://github.com/contra/gulp-cached "gulp-cached"))
 - `clearApp` - удаляет ненужные файлы и папки в папке `..app` (простите за тавтологию)
