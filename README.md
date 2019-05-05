@@ -1,3 +1,9 @@
+## Особенности
+
+- Используется шаблонизатор [PUG](https://pugjs.org/ "PUG")
+- Используется препроцессор [SASS](https://sass-lang.com "SASS")
+- Используется методология [БЭМ](https://ru.bem.info/ "БЭМ")
+
 ## Для работы потребуется
 - [Node.js](https://nodejs.org/) - чтобы устанавливать пакеты, в том числе и плагины для GULP
     - Есть аналог [Yarn](https://yarnpkg.com/ru/), он хоть и быстрее, но мне лично нравится меньше
@@ -40,16 +46,60 @@
 
 `npm install --save-dev gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-strip-comments gulp-uncss gulp-svgstore gulp-cached fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber# gulp`
 
+## Команды GULP
+
+**Команды разработки:**
+- При разработке используется только папка `../app`, т.е. все действия с файлами происходят там. При сборке все названия папок и их иерархия остаются такими же
+- **`gulp`** - основная команда. "Начинает разработку" - очищает все ненужное, перекомпилирует все самое важное и запускает локальный сервер. Также запускает "наблюдатель" - автообновление страниц
+- `pugCompile` - компилирование `.pug` файлов в папку `..app/pages` (Исключение: `_dev.pug` - служебный файл для разработки, там записываются, например, миксины)
+- `sassCompile` - компилирование `.sass` файлов, их конкатенация и минификация в один файл `..app/css/style.min.css` (Исключение: `_dev.sass` - служебный файл для разработки, там записываются, например, миксины)
+- `concatCss` - конкатенирует все CSS библиотеки в один файл `..app/css/libs.min.css` и минифицирует его
+- `concatJs` - конкатенирует все JS библиотеки в один файл `..app/js/libs.min.js` и минифицирует его
+- `createSprite` - минифицирует и объединяет все `.svg` файлы, находяещиеся в папке `..app/img`, в один файл `..app/img/sprite.svg` (он автоматически инжектится в страницу, в файле `../app/pug/_dev.pug` есть миксин для вставки SVG)
+   - `+icon(name, modificators)` - вставить SVG, где `icon` - имя файла, `modificators` - массив модификаторов (см. [BEM](https://ru.bem.info "BEM"))
+   - `+icon('hamburger', [])` - вставит `<svg class="icon__hamburger"><use xlink:href="#icon-hamburger"></use></svg>`
+   - `+icon('hamburger', ['red', 'light'])` - вставит `<svg class="icon__hamburger icon__hamburger_red icon__hamburger_light"><use xlink:href="#icon-hamburger"></use></svg>`
+   - `+icon('hamburger', ['green', 'size_big'])` - вставит `<svg class="icon__hamburger icon__hamburger_green icon__hamburger_size_big"><use xlink:href="#icon-hamburger"></use></svg>`
+- `liveReload` - инициализация локального сервера`
+- `clearCache` - очистка кэша в памяти (см. [gulp-cached](https://github.com/contra/gulp-cached "gulp-cached"))
+- `clearApp` - удаляет ненужные файлы и папки в папке `..app` (простите за тавтологию)
+- `clearDest` - удаляет папку `..dest`
+- `clearDestWithoutImg` - в папке `..dest` удаляет все, кроме папки ..dest/img (папки с изображениями)
+- `clearDestOnlyImg` - в папке `..dest` удаляет только папку `..dest/img` (папку с изображениями)
+- `clearAll` - `clearCache`, `clearApp`, `clearDest` вместе взятые
+- `watcher` - инициализирует "наблюдателя" - автообновление страниц
+
+**Команды для сборки:**
+- `build` - собрать проект:
+   - *все в итоге копируется в папку `..dest`*
+   - выполяется `clearDest`
+   - заново компилируются `.pug` файлы (см `pugCompile`), также минифицируются
+   - заново компилируются `.sass` файлы (см `sassCompile`), также оптимизируются (см. [gulp-uncss](https://github.com/ben-eb/gulp-uncss "gulp-uncss"))
+   - транспилируется и оптимизируется (удаляются комментарии - см. [gulp-strip-comments](https://github.com/RnbWd/gulp-strip-comments "gulp-strip-comments")) файл `..app/js/common.js`
+   - заново конкатенируются все CSS библиотеки (см. `concatCss`), также оптимизируются (см. [gulp-uncss](https://github.com/ben-eb/gulp-uncss "gulp-uncss"))
+   - заново конкатенируются все JS библиотеки (см. `concatCss`)
+   - минифицируются изображения формата `.png`, `.gif`, `.jpg`, `.jpeg` (см. [gulp-imagemin](https://github.com/sindresorhus/gulp-imagemin "gulp-imagemin"))
+   - выполняется `createSprite`
+   - все оставшиеся форматы изображений просто копируются
+- `buildWithoutImg`
+   - выполняет все то же, что и `build`, за исключением работы с изображениями (просто копирует папку с изображениями - `..app/img`)
+- `buildOnlyImg`
+   - выполняет только работу с изображениями, т.е.:
+   - минифицируются изображения формата `.png`, `.gif`, `.jpg`, `.jpeg` (см. [gulp-imagemin](https://github.com/sindresorhus/gulp-imagemin "gulp-imagemin"))
+   - выполняется `createSprite`
+   - все оставшиеся форматы изображений просто копируются
+
 ## Плагины
 (все, что ~~вычеркнуто~~, не используется, это просто интересные и полезные, относительно, плагины)
 
 **Компиляция:**
-- [gulp-pug](https://github.com/gulp-community/gulp-pug "gulp-pug") - компиляция PUG в HTML
-- [gulp-sass](https://github.com/dlmanning/gulp-sass "gulp-sass") - компиляция SASS в CSS
+- [gulp-pug](https://github.com/gulp-community/gulp-pug "gulp-pug") - компиляция [PUG](https://pugjs.org/ "PUG") в HTML
+- [gulp-sass](https://github.com/dlmanning/gulp-sass "gulp-sass") - компиляция [SASS](https://sass-lang.com "SASS") в CSS
 
 **Транспиляция:**
 - [gulp-babel](https://github.com/babel/gulp-babel "gulp-babel") - конвертирует ES6/ES7 в ES5
-Конкатенация:
+
+**Конкатенация:**
 - [gulp-concat](https://github.com/wearefractal/gulp-concat "gulp-concat") - конкатенация файлов
 
 **Минификация:**
