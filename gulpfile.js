@@ -47,7 +47,7 @@ const del          = require('del');                   // https://github.com/sin
 const plumber      = require('gulp-plumber');          // https://github.com/floatdrop/gulp-plumber
 
 // Glob options
-// All libs in "app/libs"
+// All libs in "app/libs". Use bower install <package name>
 let libsCss = []; // CSS libs
 let libsJs = []; // JS libs
 let toDeleteApp = ['app/**',
