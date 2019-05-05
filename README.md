@@ -10,8 +10,8 @@
 - [Git](https://gitforwindows.org) - для работы некоторых плагинов (а точнее [bower](https://bower.io))
 - [ConEmu](https://conemu.github.io) - консоль; для удобной работы с GULP
 
-## Если вдруг нет GULP
-(либо был установен, но вы хотите переустановить)
+## ## Установка
+Если вдруг нет GULP, либо был установен, но вы хотите переустановить, то
 
 - Удаляем GULP глобально:
 
@@ -41,6 +41,8 @@
 
 `npm install --save-dev gulpjs/gulp`
 
+- Если есть доступ к репозиторию, то выполняем в консоли `git clone https://github.com/coolpanda02/gulp` (скачается репозиторий с гитхаба, можно скачать вручную)
+
 - Устанавливаем GULP плагины (зависимости):
 (сразу все, ниже можно прочитать про все плагины отдельно)
 
@@ -56,7 +58,7 @@
 - `concatCss` - конкатенирует все CSS библиотеки в один файл `..app/css/libs.min.css` и минифицирует его
 - `concatJs` - конкатенирует все JS библиотеки в один файл `..app/js/libs.min.js` и минифицирует его
 - `createSprite` - минифицирует и объединяет все `.svg` файлы, находяещиеся в папке `..app/img`, в один файл `..app/img/sprite.svg` (он автоматически инжектится в страницу, в файле `../app/pug/_dev.pug` есть миксин для вставки SVG)
-   - `+icon(name, modificators)` - вставить SVG, где `icon` - имя файла, `modificators` - массив модификаторов (см. [BEM](https://ru.bem.info "BEM"))
+   - `+icon(name, modificators)` - вставить SVG, где `icon` - имя файла, `modificators` - массив модификаторов (см. [БЭМ](https://ru.bem.info "БЭМ"))
    - `+icon('hamburger', [])` - вставит `<svg class="icon__hamburger"><use xlink:href="#icon-hamburger"></use></svg>`
    - `+icon('hamburger', ['red', 'light'])` - вставит `<svg class="icon__hamburger icon__hamburger_red icon__hamburger_light"><use xlink:href="#icon-hamburger"></use></svg>`
    - `+icon('hamburger', ['green', 'size_big'])` - вставит `<svg class="icon__hamburger icon__hamburger_green icon__hamburger_size_big"><use xlink:href="#icon-hamburger"></use></svg>`
