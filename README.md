@@ -3,7 +3,7 @@
 - Используется шаблонизатор [PUG](https://pugjs.org/ "PUG")
 - Используется препроцессор [SASS](https://sass-lang.com "SASS")
 - Используется методология [БЭМ](https://ru.bem.info/ "БЭМ")
-   - Используется плагин [gulp-posthtml](https://github.com/posthtml/gulp-posthtml "gulp-posthtml") для более удобного использования [PUG](https://pugjs.org/ "PUG") и [БЭМ](https://ru.bem.info/ "БЭМ")
+   - Используется плагин [posthtml-bem](https://github.com/rajdee/posthtml-bem "posthtml-bem") для более удобного использования [PUG](https://pugjs.org/ "PUG") и [БЭМ](https://ru.bem.info/ "БЭМ")
 
 ## Для работы потребуется
 - [Node.js](https://nodejs.org/ "Node.js") - чтобы устанавливать пакеты, в том числе и плагины для GULP
@@ -160,4 +160,5 @@
 - [gulp-plumber](https://github.com/floatdrop/gulp-plumber "gulp-plumber") - не останавливает выполнение кода из-за ошибок в .pipe()
 - ~~[gulp-sourcemaps](https://github.com/floridoo/gulp-sourcemaps "gulp-sourcemaps")~~ - создает sourcemap (карту кода)
 - ~~[gulp-prompt](https://github.com/Freyskeyd/gulp-prompt#readme "gulp-prompt")~~ - добавляет взаимодействие с GULP через консоль
-- [gulp-posthtml](https://github.com/posthtml/gulp-posthtml "gulp-posthtml") - упрощает использование [БЭМ](https://ru.bem.info/ "БЭМ") в [PUG](https://pugjs.org/ "PUG")
+- [gulp-posthtml](https://github.com/posthtml/gulp-posthtml "gulp-posthtml") - трансформирует HTML/XML с помощью JS
+   - [posthtml-bem](https://github.com/rajdee/posthtml-bem "posthtml-bem") - упрощает использование [БЭМ](https://ru.bem.info/ "БЭМ") в [PUG](https://pugjs.org/ "PUG")
