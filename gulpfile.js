@@ -158,6 +158,14 @@ function createSprite() {
 			prefix: 'icon-'
 		}))
 		.pipe(svgstore())
+		.pipe(cheerio({
+			run: function ($) {
+				$('svg').attr('style',  'display:none');
+			},
+			parserOptions: {
+				xmlMode: true
+			}
+		}))
 		.pipe(rename({
 			basename: 'sprite'
 		}))
@@ -348,6 +356,14 @@ function buildPart8() {
 			prefix: 'icon-'
 		}))
 		.pipe(svgstore())
+		.pipe(cheerio({
+			run: function ($) {
+				$('svg').attr('style',  'display:none');
+			},
+			parserOptions: {
+				xmlMode: true
+			}
+		}))
 		.pipe(rename({
 			basename: 'sprite'
 		}))
