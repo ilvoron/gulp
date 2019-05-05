@@ -197,11 +197,6 @@ function liveReload() {
 /* Cleaner. Reloader. Watcher. Builder */
 /*-------------------------------------*/
 
-function clearCache(done) {
-	cache.caches = {};
-	done();
-}
-
 function clearApp(done) {
 	del.sync(toDeleteApp);
 	log(chalk.cyan('Clearing "app" folder...'));
@@ -412,14 +407,13 @@ function buildPart10() {
 		.pipe(dest('dest/img'));
 }
 
-
 /*--------------------*/
 /* Register functions */
 /*--------------------*/
 
 // Templates
 let pugCompile = series(pugCompilePart1, pugCompilePart2);
-let clearAll   = series(clearCache, clearApp, clearDest);
+let clearAll   = series(clearApp, clearDest);
 let build      = series(buildPart1, buildPart2, buildPart3, buildPart4, buildPart5, buildPart6);
 
 exports.pugCompile   = pugCompile;   // Compile .pug files 
@@ -429,7 +423,6 @@ exports.concatJs     = concatJs;     // Concatenate js libs and minify
 exports.createSprite = createSprite; // Create SVG sprite
 exports.liveReload   = liveReload;   // Initializing browser synchronization
 
-exports.clearCache          = clearCache;          // Clears the cache
 exports.clearApp            = clearApp;            // Deleting unnecessary files and folders in "app" folder
 exports.clearDest           = clearDest;           // Delete "dest" folder
 exports.clearDestWithoutImg = clearDestWithoutImg; // In "dest" folder delete all without images ("img")
