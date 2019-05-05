@@ -46,9 +46,11 @@ const autoprefixer = require('gulp-autoprefixer');     // https://github.com/sin
 const rename       = require('gulp-rename');           // https://github.com/hparra/gulp-rename
 const del          = require('del');                   // https://github.com/sindresorhus/del
 const plumber      = require('gulp-plumber');          // https://github.com/floatdrop/gulp-plumber
+const posthtml     = require('gulp-posthtml');         // https://github.com/posthtml/gulp-posthtml
+const posthtmlBem  = require('posthtml-bem');          // https://github.com/rajdee/posthtml-bem
 
 // Glob options
-// All libs in "app/libs". Use bower install <package name>
+// All libs in "app/libs". Use "bower install <package name>"
 let libsCss = []; // CSS libs
 let libsJs = []; // JS libs
 let toDeleteApp = ['app/**',
@@ -78,6 +80,13 @@ function pugCompilePart1() {
 		.pipe(plumber())
 		.pipe(cache('pugCompiling'))
 		.pipe(pug())
+		.pipe(posthtml([
+            posthtmlBem({
+                elemPrefix: '__',
+                modPrefix: '_',
+                modDlmtr: '--'
+            })
+        ]))
 		.pipe(plumber.stop())
 		.pipe(dest('app/pages'));
 }
@@ -87,6 +96,13 @@ function pugCompilePart2() {
 		.pipe(plumber())
 		.pipe(cache('pugCompiling'))
 		.pipe(pug())
+		.pipe(posthtml([
+            posthtmlBem({
+                elemPrefix: '__',
+                modPrefix: '_',
+                modDlmtr: '--'
+            })
+        ]))
 		.pipe(plumber.stop())
 		.pipe(dest('app'));
 }
@@ -228,6 +244,13 @@ function buildPart1() {
 	log(chalk.cyan('Recompiling PUG...'));
 	return src(['app/pug/**/*.pug', '!app/pug/_dev.pug'])
 		.pipe(pug())
+		.pipe(posthtml([
+            posthtmlBem({
+                elemPrefix: '__',
+                modPrefix: '_',
+                modDlmtr: '--'
+            })
+        ]))
 		.pipe(htmlmin())
 		.pipe(dest('dest/pages'));
 }
@@ -236,6 +259,13 @@ function buildPart2() {
 	log(chalk.cyan('Recompiling index.pug...'));
 	return src('app/index.pug')
 		.pipe(pug())
+		.pipe(posthtml([
+            posthtmlBem({
+                elemPrefix: '__',
+                modPrefix: '_',
+                modDlmtr: '--'
+            })
+        ]))
 		.pipe(htmlmin())
 		.pipe(dest('dest'));
 }
