@@ -236,7 +236,7 @@ function watcher() {
 	liveReload();
 	watch('app/sass/**/*.sass', sassCompile);
 	watch(['app/pug/**/*.pug', 'app/index.pug'], pugCompile);
-	watch(['app/pages/**/*.html', 'app/index.html']).on('change', browserSync.reload);
+	watch(['app/pages/**/*.html', 'app/index.html', 'app/pug/_dev.pug']).on('change', browserSync.reload);
 	watch(['app/js/common.js', '!app/js/libs.min.js']).on('change', browserSync.reload);
 }
 
