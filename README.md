@@ -21,17 +21,17 @@
 
 - Удаляем GULP локально:
 
-`npm rm --save-dev gulp`
+`npm rm -D gulp`
 
-`npm rm --save-dev gulp-cli`
+`npm rm -D gulp-cli`
 
-`npm rm --save gulp`
+`npm rm -S gulp`
 
-`npm rm --save gulp-cli`
+`npm rm -S gulp-cli`
 
 - Устанавливаем GULP глобально:
 
-`npm install -g gulpjs/gulp-cli`
+`npm i -g gulpjs/gulp-cli`
 
 **Теперь для каждого проекта просто создаем папку в которой делаем следующее:**
 
@@ -41,14 +41,14 @@
 
 - Устанавливаем GULP локально:
 
-`npm install --save-dev gulpjs/gulp`
+`npm i -D gulpjs/gulp`
 
 - Если есть доступ к репозиторию, то выполняем в консоли `git clone https://github.com/coolpanda02/gulp` (скачается репозиторий с гитхаба, можно скачать вручную)
 
 - Устанавливаем GULP плагины (зависимости):
 (сразу все, ниже можно прочитать про все плагины отдельно)
 
-`npm install --save-dev gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-strip-comments gulp-uncss gulp-svgstore gulp-cached fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber# gulp`
+`npm i -D gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-strip-comments gulp-uncss gulp-svgstore gulp-cached fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber# gulp`
 
 ## Команды GULP
 
@@ -94,6 +94,8 @@
    - все оставшиеся форматы изображений просто копируются
 
 ## Плагины
+Устнавливаются командой npm i -D `<имя пакета>`
+
 (все, что ~~вычеркнуто~~, не используется, это просто интересные и полезные, относительно, плагины)
 
 **Компиляция:**
