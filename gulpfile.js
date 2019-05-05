@@ -396,7 +396,7 @@ exports.clearAll            = clearAll;            // Deleting unnecessary files
 exports.watcher             = watcher;             // Initializing watcher
 
 exports.build               = series(clearDest, build, buildPart7, buildPart8, buildPart9); // Build project and compress images
-exports.buildWithoutImg     = series(clearDestWithoutImg, buildб, buildPart10);             // Build project without compress images
+exports.buildWithoutImg     = series(clearDestWithoutImg, build, buildPart10);             // Build project without compress images
 exports.buildOnlyImg        = series(clearDestOnlyImg, buildPart7, buildPart8, buildPart9); // Only compress images
 
 // As default development mode starts
