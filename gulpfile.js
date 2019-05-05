@@ -33,9 +33,6 @@ const strip    = require('gulp-strip-comments'); // https://github.com/RnbWd/gul
 const uncss    = require('gulp-uncss');    // https://github.com/ben-eb/gulp-uncss
 const svgstore = require('gulp-svgstore'); // https://github.com/w0rm/gulp-svgstore
 
-// Cashing
-const cache = require('gulp-cached'); // https://github.com/gulp-community/gulp-cached
-
 // Logging
 const log   = require('fancy-log');  // https://github.com/gulpjs/fancy-log
 const chalk = require('chalk');      // https://github.com/chalk/chalk
@@ -78,7 +75,6 @@ let toDeleteDestWithoutImg = toDeleteDestOnlyImg;
 function pugCompilePart1() {
 	return src(['app/pug/**/*.pug', '!app/pug/_dev.pug'])
 		.pipe(plumber())
-		.pipe(cache('pugCompiling'))
 		.pipe(pug())
 		.pipe(posthtml([
             posthtmlBem({
@@ -94,7 +90,6 @@ function pugCompilePart1() {
 function pugCompilePart2() {
 	return src('app/index.pug')
 		.pipe(plumber())
-		.pipe(cache('pugCompiling'))
 		.pipe(pug())
 		.pipe(posthtml([
             posthtmlBem({
@@ -110,7 +105,6 @@ function pugCompilePart2() {
 function sassCompile() {
 	return src(['app/sass/**/*.sass', '!app/sass/_dev.sass'])
 		.pipe(plumber())
-		.pipe(cache('sassCompiling'))
 		.pipe(sass().on('error', sass.logError))
 		.pipe(autoprefixer(['last 10 versions']))
 		.pipe(concat('style.min.css'))
