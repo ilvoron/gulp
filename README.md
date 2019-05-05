@@ -48,7 +48,7 @@
 - Устанавливаем GULP плагины (зависимости):
 (сразу все, ниже можно прочитать про все плагины отдельно)
 
-`npm i -D gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-strip-comments gulp-uncss gulp-svgstore gulp-cached fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber`
+`npm i -D gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-cheerio gulp-strip-comments gulp-uncss gulp-svgstore gulp-cached fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber`
 
 ## Команды GULP
 
@@ -119,6 +119,7 @@
    - [imagemin-mozjpeg](https://github.com/imagemin/imagemin-mozjpeg "imagemin-mozjpeg") - плагин для gulp-imagemin
    - [imagemin-zopfli](https://github.com/imagemin/imagemin-zopfli "imagemin-zopfli") - плагин для gulp-imagemin
 - [gulp-svgmin](https://github.com/ben-eb/gulp-svgmin "gulp-svgmin") - минификация SVG
+- [gulp-cheerio](https://github.com/knpwrs/gulp-cheerio "gulp-cheerio") - позволяет управлять файлами HTML и XML
 - [gulp-strip-comments](https://github.com/RnbWd/gulp-strip-comments "gulp-strip-comments") - удаляет комментарии из JSON, JavaScript, CSS, HTML и т.д.
 
 **Оптимизация:**
