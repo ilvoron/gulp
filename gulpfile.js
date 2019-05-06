@@ -50,8 +50,8 @@ const posthtmlBem  = require('posthtml-bem');          // https://github.com/raj
 // Main file
 let indexFile = 'index.html'
 // All libs in "app/libs". Use "bower install <package name>"
-let libsCss = []; // CSS libs
-let libsJs = []; // JS libs
+let libsCss = []; // CSS libs. Example ['app/libs/bootstrap/dist/css/bootstrap.min.css']
+let libsJs = []; // JS libs. Example ['app/libs/jquery/dist/jquery.min.js']
 let toDeleteApp = ['app/css',
 	'app/**/*.{html,htm}',
 	'!app/fonts',
@@ -210,7 +210,7 @@ function watcher() {
 	watch(['app/sass/**/*.{sass,scss}'], sassCompile);
 	watch(['app/**/*.{pug,jade}'], pugCompile);
 	watch(['app/**/*.{html,htm}']).on('change', browserSync.reload);
-	watch(['app/js/common.js', '!app/js/libs.min.js']).on('change', browserSync.reload);
+	watch(['app/js/*.js']).on('change', browserSync.reload);
 }
 
 function buildPartCompilePug() {
