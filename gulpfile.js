@@ -47,18 +47,19 @@ const posthtml     = require('gulp-posthtml');         // https://github.com/pos
 const posthtmlBem  = require('posthtml-bem');          // https://github.com/rajdee/posthtml-bem
 
 // Glob options
+// Main file
+let indexFile = 'index.html'
 // All libs in "app/libs". Use "bower install <package name>"
 let libsCss = []; // CSS libs
 let libsJs = []; // JS libs
 let toDeleteApp = ['app/**',
 	'!app',
-	'!app/index.pug',
+	'!app/**/*.pug',
 	'!app/fonts/**',
 	'!app/img/**',
 	'!app/js',
 	'!app/js/common.js',
 	'!app/libs/**',
-	'!app/pug/**',
 	'!app/sass/**']; // To clear "app" folder
 let toDeleteDest = ['dest']; // To clear "dest" folder
 let toDeleteDestOnlyImg = ['dest/img'];
@@ -72,23 +73,8 @@ let toDeleteDestWithoutImg = toDeleteDestOnlyImg;
 /* Functions */
 /*-----------*/
 
-function pugCompilePart1() {
-	return src(['app/pug/**/*.pug', '!app/pug/_dev.pug'])
-		.pipe(plumber())
-		.pipe(pug())
-		.pipe(posthtml([
-            posthtmlBem({
-                elemPrefix: '__',
-                modPrefix: '_',
-                modDlmtr: '--'
-            })
-        ]))
-		.pipe(plumber.stop())
-		.pipe(dest('app/pages'));
-}
-
-function pugCompilePart2() {
-	return src('app/index.pug')
+function pugCompile() {
+	return src(['app/**/[^_]*.pug', 'app/**/[^_]*.jade'])
 		.pipe(plumber())
 		.pipe(pug())
 		.pipe(posthtml([
@@ -103,7 +89,7 @@ function pugCompilePart2() {
 }
 
 function sassCompile() {
-	return src(['app/sass/**/*.sass', '!app/sass/_dev.sass'])
+	return src(['app/sass/**/[^_]*.sass', 'app/sass/**/[^_]*.scss'])
 		.pipe(plumber())
 		.pipe(sass().on('error', sass.logError))
 		.pipe(autoprefixer(['last 10 versions']))
@@ -187,7 +173,7 @@ function liveReload() {
 	browserSync.init({
 		server: {
 			baseDir: 'app',
-			index: "index.html"
+			index: indexFile
 		},
 		notify: false
 	})
@@ -223,16 +209,16 @@ function clearDestOnlyImg(done) {
 
 function watcher() {
 	liveReload();
-	watch('app/sass/**/*.sass', sassCompile);
-	watch(['app/pug/**/*.pug', 'app/index.pug'], pugCompile);
-	watch('app/pug/_dev.pug', series(pugCompilePart1, pugCompilePart2));
-	watch(['app/pages/**/*.html', 'app/index.html']).on('change', browserSync.reload);
+	watch(['app/sass/**/*.sass', 'app/sass/**/*.scss'], sassCompile);
+	watch(['app/**/*.pug', 'app/**/*.jade'], pugCompile);
+	watch(['app/**/*.html', 'app/**/*.htm']).on('change', browserSync.reload);
 	watch(['app/js/common.js', '!app/js/libs.min.js']).on('change', browserSync.reload);
 }
 
-function buildPart1() {
+function buildPartCompilePug() {
 	log(chalk.cyan('Recompiling PUG...'));
-	return src(['app/pug/**/*.pug', '!app/pug/_dev.pug'])
+	return src(['app/**/[^_]*.pug', 'app/**/[^_]*.jade'])
+		.pipe(plumber())
 		.pipe(pug())
 		.pipe(posthtml([
             posthtmlBem({
@@ -241,39 +227,24 @@ function buildPart1() {
                 modDlmtr: '--'
             })
         ]))
-		.pipe(htmlmin())
-		.pipe(dest('dest/pages'));
-}
-
-function buildPart2() {
-	log(chalk.cyan('Recompiling index.pug...'));
-	return src('app/index.pug')
-		.pipe(pug())
-		.pipe(posthtml([
-            posthtmlBem({
-                elemPrefix: '__',
-                modPrefix: '_',
-                modDlmtr: '--'
-            })
-        ]))
-		.pipe(htmlmin())
+		.pipe(plumber.stop())
 		.pipe(dest('dest'));
 }
 
-function buildPart3() {
+function buildPartCompileSass() {
 	log(chalk.cyan('Recompiling SASS...'));
-	return src(['app/sass/**/*.sass', '!app/sass/_dev.sass'])
+	return src(['app/sass/**/[^_]*.sass', 'app/sass/**/[^_]*.scss'])
 		.pipe(sass().on('error', sass.logError))
 		.pipe(autoprefixer(['last 10 versions']))
 		.pipe(concat('style.min.css'))
 		.pipe(uncss({
-			html: ['dest/pages/**/*.html', 'dest/index.html']
+			html: ['dest/**/*.html', 'dest/**/*.htm']
 		}))
 		.pipe(cssnano())
 		.pipe(dest('dest/css'));
 }
 
-function buildPart4() {
+function buildPartCommonJs() {
 	log(chalk.cyan('Working with common.js...'));
 	return src('app/js/common.js')
 		.pipe(babel({
@@ -283,13 +254,13 @@ function buildPart4() {
 		.pipe(dest('dest/js'));
 }
 
-function buildPart5(done) {
+function buildPartConcatCss(done) {
 	log(chalk.cyan('Reconcatenating CSS libs...'));
 	if (libsCss.length > 0) {
 		src(libsCss)
 			.pipe(concat('libs.min.css'))
 			.pipe(uncss({
-				html: ['dest/pages/**/*.html', 'dest/index.html']
+				html: ['dest/**/*.html', 'dest/**/*.htm']
 			}))
 			.pipe(cssnano())
 			.pipe(dest('dest/css'))
@@ -298,7 +269,7 @@ function buildPart5(done) {
 	}
 }
 
-function buildPart6(done) {
+function buildPartConcatJs(done) {
 	log(chalk.cyan('Reconcatenating JS libs...'));
 	if (libsJs.length > 0) {
 		src(libsJs)
@@ -310,7 +281,7 @@ function buildPart6(done) {
 	}
 }
 
-function buildPart7() {
+function buildPartMinifyBaseImages() {
 	log(chalk.cyan('Minifying images with .png, .gif, .jpg, .jpeg extensions...'));
 	return src('app/img/**/*.{png,gif,jpg,jpeg}', { //svg may be?
 			allowEmpty: true
@@ -350,7 +321,7 @@ function buildPart7() {
 		.pipe(dest('dest/img'));
 }
 
-function buildPart8() {
+function buildPartMinifySVG() {
 	log(chalk.cyan('Minifying SVG images in one sprite...'));
 	return src('app/img/**/*.svg', {
 			allowEmpty: true
@@ -391,7 +362,7 @@ function buildPart8() {
 		.pipe(dest('dest/img'));
 }
 
-function buildPart9() {
+function buildPartCopyOtherImages() {
 	log(chalk.cyan('Copying other images...'));
 	return src(['app/img/**/*.*', '!app/img/**/*.{png,gif,jpg,jpeg,svg}'], {
 			allowEmpty: true
@@ -399,7 +370,7 @@ function buildPart9() {
 		.pipe(dest('dest/img'));
 }
 
-function buildPart10() {
+function buildPartCopyAllImages() {
 	log(chalk.cyan('Copying images...'));
 	return src('app/img/**/*.*', {
 			allowEmpty: true
@@ -412,9 +383,9 @@ function buildPart10() {
 /*--------------------*/
 
 // Templates
-let pugCompile = series(pugCompilePart1, pugCompilePart2);
-let clearAll   = series(clearApp, clearDest);
-let build      = series(buildPart1, buildPart2, buildPart3, buildPart4, buildPart5, buildPart6);
+let clearAll           = series(clearApp, clearDest);
+let build              = series(buildPartCompilePug, buildPartCompileSass, buildPartCommonJs, buildPartConcatCss, buildPartConcatJs, buildPart6);
+let buildPartMinifyImg = series(buildPartMinifyBaseImages, buildPartMinifySVG, buildPartCopyOtherImages)
 
 exports.pugCompile   = pugCompile;   // Compile .pug files 
 exports.sassCompile  = sassCompile;  // Compile .sass files, concatenate and minify
@@ -430,9 +401,9 @@ exports.clearDestOnlyImg    = clearDestOnlyImg;    // In "dest" folder delete on
 exports.clearAll            = clearAll;            // Deleting unnecessary files and folders in "app" folder. Delete "dest" folder. Clears the cache
 exports.watcher             = watcher;             // Initializing watcher
 
-exports.build               = series(clearDest, build, buildPart7, buildPart8, buildPart9); // Build project and compress images
-exports.buildWithoutImg     = series(clearDestWithoutImg, build, buildPart10);             // Build project without compress images
-exports.buildOnlyImg        = series(clearDestOnlyImg, buildPart7, buildPart8, buildPart9); // Only compress images
+exports.build           = series(clearDest, build, buildPartMinifyImg);               // Build project and compress images
+exports.buildWithoutImg = series(clearDestWithoutImg, build, buildPartCopyAllImages); // Build project without compress images
+exports.buildOnlyImg    = series(clearDestOnlyImg, buildPartMinifyImg);               // Only compress images
 
 // As default development mode starts
 exports.default = series(clearAll, sassCompile, pugCompile, concatCss, concatJs, createSprite, watcher);
