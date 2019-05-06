@@ -1,0 +1,13 @@
+//All .sass, .scss, .pug, .jade files that start with an underscore don't compile. These files just for development
+
+//Inject SVG into page
+//name - file name
+//modificators - BEM methodology
+mixin icon(name, modificators)
+	if modificators.length == 0
+		svg(class='icon__' + name)
+			use(xlink:href='#icon-' + name)
+	else
+		- function modificatorsToClasses(elementName, modificatorsArray) { let ClassesString = ''; for (var ind = 0; ind < modificatorsArray.length; ind++) { ClassesString = ClassesString + ' icon__' + elementName + '_' + modificatorsArray[ind]; }; return ClassesString; };
+		svg(class='icon__' + name + modificatorsToClasses(name, modificators))
+			use(xlink:href='#icon-' + name)
