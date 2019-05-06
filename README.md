@@ -56,22 +56,22 @@
 **Команды разработки:**
 - При разработке используется только папка `../app`, т.е. все действия с файлами происходят там. При сборке все названия папок и их иерархия остаются такими же
 - **`gulp`** - основная команда. "Начинает разработку" - очищает все ненужное, перекомпилирует все самое важное и запускает локальный сервер. Также запускает "наблюдатель" - автообновление страниц
-- `pugCompile` - компилирование `.pug` файлов в папку `..app/pages` (Исключение: `_dev.pug` - служебный файл для разработки, там записываются, например, миксины)
-- `sassCompile` - компилирование `.sass` файлов, их конкатенация и минификация в один файл `..app/css/style.min.css` (Исключение: `_dev.sass` - служебный файл для разработки, там записываются, например, миксины)
+- `pugCompile` - компилирование `.pug` и `.jade` файлов в папку `..app/` (Исключение: `_*.{pug,jade}` - эти файлы не компилируются, они нужны только для разработки)
+- `sassCompile` - компилирование `.sass` и `.scss` файлов, их конкатенация и минификация в один файл `..app/css/style.min.css` (Исключение: `_*.{sass,scss}` - эти файлы не компилируются, они нужны только для разработки)
 - `concatCss` - конкатенирует все CSS библиотеки в один файл `..app/css/libs.min.css` и минифицирует его
 - `concatJs` - конкатенирует все JS библиотеки в один файл `..app/js/libs.min.js` и минифицирует его
-- `createSprite` - минифицирует и объединяет все `.svg` файлы, находяещиеся в папке `..app/img`, в один файл `..app/img/sprite.svg` (он автоматически инжектится в страницу, в файле `../app/pug/_dev.pug` есть миксин для вставки SVG)
+- `createSprite` - минифицирует и объединяет все `.svg` файлы, находяещиеся в папке `..app/img`, в один файл `..app/img/sprite.svg` (он автоматически инжектится в страницу, в файле `../app/_dev.pug` (если вы его не удалили) есть миксин для вставки SVG по методологии [БЭМ](https://ru.bem.info "БЭМ"))
    - `+icon(name, modificators)` - вставить SVG, где `icon` - имя файла, `modificators` - массив модификаторов (см. [БЭМ](https://ru.bem.info "БЭМ"))
+   - **Например:**
    - `+icon('hamburger', [])` - вставит `<svg class="icon__hamburger"><use xlink:href="#icon-hamburger"></use></svg>`
    - `+icon('school', ['red', 'light'])` - вставит `<svg class="icon__school icon__school_red icon__school_light"><use xlink:href="#icon-hamburger"></use></svg>`
    - `+icon('facebook', ['green', 'size_big'])` - вставит `<svg class="icon__facebook icon__facebook_green icon__facebook_size_big"><use xlink:href="#icon-hamburger"></use></svg>`
 - `liveReload` - инициализация локального сервера`
-- `clearCache` - очистка кэша в памяти (см. [gulp-cached](https://github.com/contra/gulp-cached "gulp-cached"))
-- `clearApp` - удаляет ненужные файлы и папки в папке `..app` (простите за тавтологию)
+- `clearApp` - удаляет папку `..app/css` и все файлы по шаблону `..app/**/*.{html,htm}`
 - `clearDest` - удаляет папку `..dest`
-- `clearDestWithoutImg` - в папке `..dest` удаляет все, кроме папки ..dest/img (папки с изображениями)
+- `clearDestWithoutImg` - в папке `..dest` удаляет все, кроме папки `..dest/img` (папки с изображениями)
 - `clearDestOnlyImg` - в папке `..dest` удаляет только папку `..dest/img` (папку с изображениями)
-- `clearAll` - `clearCache`, `clearApp`, `clearDest` вместе взятые
+- `clearAll` - `clearApp`, `clearDest` вместе взятые
 - `watcher` - инициализирует "наблюдателя" - автообновление страниц
 
 **Команды для сборки:**
@@ -86,6 +86,7 @@
    - минифицируются изображения формата `.png`, `.gif`, `.jpg`, `.jpeg` (см. [gulp-imagemin](https://github.com/sindresorhus/gulp-imagemin "gulp-imagemin"))
    - выполняется `createSprite`
    - все оставшиеся форматы изображений просто копируются
+   - также копируется папка `..app/fonts`
 - `buildWithoutImg`
    - выполняет все то же, что и `build`, за исключением работы с изображениями (просто копирует папку с изображениями - `..app/img`)
 - `buildOnlyImg`
