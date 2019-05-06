@@ -59,20 +59,31 @@
 - `pugCompile` - компилирование `.pug` и `.jade` файлов в папку `..app/` (Исключение: `_*.{pug,jade}` - эти файлы не компилируются, они нужны только для разработки)
 - `sassCompile` - компилирование `.sass` и `.scss` файлов, их конкатенация и минификация в один файл `..app/css/style.min.css` (Исключение: `_*.{sass,scss}` - эти файлы не компилируются, они нужны только для разработки)
 - `concatCss` - конкатенирует все CSS библиотеки в один файл `..app/css/libs.min.css` и минифицирует его
+   - Пути к библиотекам находятся в файле `..gulpfile.js` в переменной `libsCss`
 - `concatJs` - конкатенирует все JS библиотеки в один файл `..app/js/libs.min.js` и минифицирует его
+   - Пути к библиотекам находятся в файле `..gulpfile.js` в переменной `libsJs`
 - `createSprite` - минифицирует и объединяет все `.svg` файлы, находяещиеся в папке `..app/img`, в один файл `..app/img/sprite.svg` (он автоматически инжектится в страницу, в файле `../app/_dev.pug` (если вы его не удалили) есть миксин для вставки SVG по методологии [БЭМ](https://ru.bem.info "БЭМ"))
    - `+icon(name, modificators)` - вставить SVG, где `icon` - имя файла, `modificators` - массив модификаторов (см. [БЭМ](https://ru.bem.info "БЭМ"))
    - **Например:**
    - `+icon('hamburger', [])` - вставит `<svg class="icon__hamburger"><use xlink:href="#icon-hamburger"></use></svg>`
    - `+icon('school', ['red', 'light'])` - вставит `<svg class="icon__school icon__school_red icon__school_light"><use xlink:href="#icon-hamburger"></use></svg>`
    - `+icon('facebook', ['green', 'size_big'])` - вставит `<svg class="icon__facebook icon__facebook_green icon__facebook_size_big"><use xlink:href="#icon-hamburger"></use></svg>`
-- `liveReload` - инициализация локального сервера`
+- `liveReload` - инициализация локального сервера и синхронизации с браузером
+   - в файл `..gulpfile.js` есть переменная `indexFile` (по умолчанию `indexFile = 'index.html'`), которая управляет главной страницей сайта при инициализации локального сервера
 - `clearApp` - удаляет папку `..app/css` и все файлы по шаблону `..app/**/*.{html,htm}`
+   - регулировать этим можно из файла `..gulpfile.js` в переменной `toDeleteApp`
 - `clearDest` - удаляет папку `..dest`
+   - регулировать этим можно из файла `..gulpfile.js` в переменной `toDeleteDest`
 - `clearDestWithoutImg` - в папке `..dest` удаляет все, кроме папки `..dest/img` (папки с изображениями)
+   - регулировать этим можно из файла `..gulpfile.js` в переменной `toDeleteDestWithoutImg`
 - `clearDestOnlyImg` - в папке `..dest` удаляет только папку `..dest/img` (папку с изображениями)
+   - регулировать этим можно из файла `..gulpfile.js` в переменной `toDeleteDestOnlyImg`
 - `clearAll` - `clearApp`, `clearDest` вместе взятые
-- `watcher` - инициализирует "наблюдателя" - автообновление страниц
+- `watcher` - инициализирует "наблюдателя" - автообновление страниц (также вызвается `liveReload`)
+   - при изменении `.sass`, `.scss` файлов выполняется `sassCompile` и файы как бы инжектятся в страницу в браузере (страница не обновляется, а стили обновляются)
+   - при изменении `.pug`, `.jade` файлов выполняется `pugCompile`
+   - при изменении `.html`, `.htm` файлов выполняется перезагрузка страниц в браузере
+   - при изменении `.js` файлов в папке `..app/js` выполняется перезагрузка страниц в браузере
 
 **Команды для сборки:**
 - `build` - собрать проект:
