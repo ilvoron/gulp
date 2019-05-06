@@ -46,7 +46,7 @@ const plumber      = require('gulp-plumber');          // https://github.com/flo
 const posthtml     = require('gulp-posthtml');         // https://github.com/posthtml/gulp-posthtml
 const posthtmlBem  = require('posthtml-bem');          // https://github.com/rajdee/posthtml-bem
 
-// Glob options
+// Global options
 // Main file
 let indexFile = 'index.html'
 // All libs in "app/libs". Use "bower install <package name>"
