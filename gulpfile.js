@@ -52,16 +52,13 @@ let indexFile = 'index.html'
 // All libs in "app/libs". Use "bower install <package name>"
 let libsCss = []; // CSS libs
 let libsJs = []; // JS libs
-let toDeleteApp = ['app/**',
-	'!app',
-	'!app/**/*.pug',
-	'!app/**/*.jade',
-	'!app/fonts/**',
-	'!app/img/**',
+let toDeleteApp = ['app/css',
+	'app/**/*.{html,htm}',
+	'!app/fonts',
+	'!app/img',
 	'!app/js',
-	'!app/js/common.js',
-	'!app/libs/**',
-	'!app/sass/**']; // To clear "app" folder
+	'!app/libs',
+	'!app/sass']; // To clear "app" folder
 let toDeleteDest = ['dest']; // To clear "dest" folder
 let toDeleteDestOnlyImg = ['dest/img'];
 let toDeleteDestWithoutImg = toDeleteDestOnlyImg;
@@ -75,7 +72,7 @@ let toDeleteDestWithoutImg = toDeleteDestOnlyImg;
 /*-----------*/
 
 function pugCompile() {
-	return src(['app/**/[^_]*.pug', 'app/**/[^_]*.jade'])
+	return src(['app/**/[^_]*.{pug,jade}'])
 		.pipe(plumber())
 		.pipe(pug())
 		.pipe(posthtml([
@@ -90,7 +87,7 @@ function pugCompile() {
 }
 
 function sassCompile() {
-	return src(['app/sass/**/[^_]*.sass', 'app/sass/**/[^_]*.scss'])
+	return src(['app/sass/**/[^_]*.{sass,scss}'])
 		.pipe(plumber())
 		.pipe(sass().on('error', sass.logError))
 		.pipe(autoprefixer(['last 10 versions']))
@@ -210,15 +207,15 @@ function clearDestOnlyImg(done) {
 
 function watcher() {
 	liveReload();
-	watch(['app/sass/**/*.sass', 'app/sass/**/*.scss'], sassCompile);
-	watch(['app/**/*.pug', 'app/**/*.jade'], pugCompile);
-	watch(['app/**/*.html', 'app/**/*.htm']).on('change', browserSync.reload);
+	watch(['app/sass/**/*.{sass,scss}'], sassCompile);
+	watch(['app/**/*.{pug,jade}'], pugCompile);
+	watch(['app/**/*.{html,htm}']).on('change', browserSync.reload);
 	watch(['app/js/common.js', '!app/js/libs.min.js']).on('change', browserSync.reload);
 }
 
 function buildPartCompilePug() {
 	log(chalk.cyan('Recompiling PUG...'));
-	return src(['app/**/[^_]*.pug', 'app/**/[^_]*.jade'])
+	return src(['app/**/[^_]*.{pug,jade}'])
 		.pipe(plumber())
 		.pipe(pug())
 		.pipe(posthtml([
@@ -234,7 +231,7 @@ function buildPartCompilePug() {
 
 function buildPartCompileSass() {
 	log(chalk.cyan('Recompiling SASS...'));
-	return src(['app/sass/**/[^_]*.sass', 'app/sass/**/[^_]*.scss'])
+	return src(['app/sass/**/[^_]*.{sass,scss}'])
 		.pipe(sass().on('error', sass.logError))
 		.pipe(autoprefixer(['last 10 versions']))
 		.pipe(concat('style.min.css'))
@@ -258,7 +255,7 @@ function buildPartCommonJs() {
 function buildPartConcatCss(done) {
 	log(chalk.cyan('Reconcatenating CSS libs...'));
 	if (libsCss.length > 0) {
-		src(libsCss)
+		return src(libsCss)
 			.pipe(concat('libs.min.css'))
 			.pipe(uncss({
 				html: ['dest/**/*.html', 'dest/**/*.htm']
@@ -273,7 +270,7 @@ function buildPartConcatCss(done) {
 function buildPartConcatJs(done) {
 	log(chalk.cyan('Reconcatenating JS libs...'));
 	if (libsJs.length > 0) {
-		src(libsJs)
+		return src(libsJs)
 			.pipe(concat('libs.min.js'))
 			.pipe(uglify())
 			.pipe(dest('dest/js'));
@@ -379,13 +376,21 @@ function buildPartCopyAllImages() {
 		.pipe(dest('dest/img'));
 }
 
+function buildPartCopyFonts() {
+	log(chalk.cyan('Copying fonts...'));
+	return src('app/fonts', {
+		allowEmpty: true
+	})
+	.pipe(dest('dest/'));
+}
+
 /*--------------------*/
 /* Register functions */
 /*--------------------*/
 
 // Templates
 let clearAll           = series(clearApp, clearDest);
-let build              = series(buildPartCompilePug, buildPartCompileSass, buildPartCommonJs, buildPartConcatCss, buildPartConcatJs, buildPart6);
+let build              = series(buildPartCompilePug, buildPartCompileSass, buildPartCommonJs, buildPartConcatCss, buildPartConcatJs, buildPartCopyFonts);
 let buildPartMinifyImg = series(buildPartMinifyBaseImages, buildPartMinifySVG, buildPartCopyOtherImages)
 
 exports.pugCompile   = pugCompile;   // Compile .pug files 
