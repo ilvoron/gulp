@@ -55,6 +55,7 @@ let libsJs = []; // JS libs
 let toDeleteApp = ['app/**',
 	'!app',
 	'!app/**/*.pug',
+	'!app/**/*.jade',
 	'!app/fonts/**',
 	'!app/img/**',
 	'!app/js',
