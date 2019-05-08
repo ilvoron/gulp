@@ -45,6 +45,7 @@ const del          = require('del');                   // https://github.com/sin
 const plumber      = require('gulp-plumber');          // https://github.com/floatdrop/gulp-plumber
 const posthtml     = require('gulp-posthtml');         // https://github.com/posthtml/gulp-posthtml
 const posthtmlBem  = require('posthtml-bem');          // https://github.com/rajdee/posthtml-bem
+const changed      = require('gulp-changed');          // https://github.com/sindresorhus/gulp-changed
 
 // Global options
 // Main file
@@ -74,6 +75,12 @@ let toDeleteDestWithoutImg = toDeleteDestOnlyImg;
 function pugCompile() {
 	return src(['app/**/[^_]*.{pug,jade}'])
 		.pipe(plumber())
+		.pipe(changed('app', {
+			extension: '.html'
+		}))
+		.pipe(changed('app', {
+			extension: '.htm'
+		}))
 		.pipe(pug({
 			basedir: 'app'
 		}))
@@ -91,6 +98,9 @@ function pugCompile() {
 function sassCompile() {
 	return src(['app/sass/**/[^_]*.{sass,scss}'])
 		.pipe(plumber())
+		.pipe(changed('app/css', {
+			extension: '.css'
+		}))
 		.pipe(sass().on('error', sass.logError))
 		.pipe(autoprefixer(['last 10 versions']))
 		.pipe(concat('style.min.css'))
