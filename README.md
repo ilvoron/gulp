@@ -174,3 +174,4 @@
 - ~~[gulp-prompt](https://github.com/Freyskeyd/gulp-prompt#readme "gulp-prompt")~~ - добавляет взаимодействие с GULP через консоль
 - [gulp-posthtml](https://github.com/posthtml/gulp-posthtml "gulp-posthtml") - трансформирует HTML/XML с помощью JS
    - [posthtml-bem](https://github.com/rajdee/posthtml-bem "posthtml-bem") - упрощает использование [БЭМ](https://ru.bem.info/ "БЭМ") в [PUG](https://pugjs.org/ "PUG")
+- [gulp-changed](https://github.com/sindresorhus/gulp-changed "gulp-changed") - работа только с изменнеными файлами
