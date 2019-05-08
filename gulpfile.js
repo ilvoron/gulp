@@ -74,7 +74,9 @@ let toDeleteDestWithoutImg = toDeleteDestOnlyImg;
 function pugCompile() {
 	return src(['app/**/[^_]*.{pug,jade}'])
 		.pipe(plumber())
-		.pipe(pug())
+		.pipe(pug({
+			basedir: 'app'
+		}))
 		.pipe(posthtml([
             posthtmlBem({
                 elemPrefix: '__',
@@ -217,7 +219,9 @@ function buildPartCompilePug() {
 	log(chalk.cyan('Recompiling PUG...'));
 	return src(['app/**/[^_]*.{pug,jade}'])
 		.pipe(plumber())
-		.pipe(pug())
+		.pipe(pug({
+			basedir: 'app'
+		}))
 		.pipe(posthtml([
             posthtmlBem({
                 elemPrefix: '__',
