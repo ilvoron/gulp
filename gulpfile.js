@@ -93,7 +93,9 @@ function sassCompile() {
 		.pipe(plumber())
 		.pipe(sass().on("error", sass.logError))
 		.pipe(autoprefixer(["last 10 versions"]))
-		.pipe(concat("style.min.css"))
+		.pipe(rename({
+			suffix: ".min"
+		}))
 		.pipe(cssnano())
 		.pipe(plumber.stop())
 		.pipe(dest("app/css"))
@@ -228,7 +230,8 @@ function buildPartCompilePug() {
                 modPrefix: "_",
                 modDlmtr: "-"
             })
-        ]))
+		]))
+		.pipe(htmlmin())
 		.pipe(plumber.stop())
 		.pipe(dest("dest"));
 }
@@ -238,7 +241,9 @@ function buildPartCompileSass() {
 	return src(["app/sass/**/[^_]*.{sass,scss}"])
 		.pipe(sass().on("error", sass.logError))
 		.pipe(autoprefixer(["last 10 versions"]))
-		.pipe(concat("style.min.css"))
+		.pipe(rename({
+			suffix: ".min"
+		}))
 		.pipe(uncss({
 			html: ["dest/**/*.html", "dest/**/*.htm"]
 		}))
