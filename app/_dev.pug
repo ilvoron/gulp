@@ -5,9 +5,9 @@
 //modificators - BEM methodology
 mixin icon(name, modificators)
 	if modificators.length == 0
-		svg(class="icon__" + name)
+		svg(block="icon__" + name)
 			use(xlink:href="#icon-" + name)
 	else
-		- function modificatorsToClasses(elementName, modificatorsArray) { let ClassesString = ""; for (var ind = 0; ind < modificatorsArray.length; ind++) { ClassesString = ClassesString + " icon__" + elementName + "_" + modificatorsArray[ind]; }; return ClassesString; };
-		svg(class="icon__" + name + modificatorsToClasses(name, modificators))
+		- function modificatorsToString(elementName, modificatorsArray) { let ClassesString = ""; for (var ind = 0; ind < modificatorsArray.length; ind++) { ClassesString = ClassesString + " " + modificatorsArray[ind]; }; return ClassesString; };
+		svg(block="icon__" + name mods=modificatorsToString(name, modificators))
 			use(xlink:href="#icon-" + name)
