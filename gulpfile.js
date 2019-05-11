@@ -30,7 +30,6 @@ const cheerio  = require("gulp-cheerio");        // https://github.com/knpwrs/gu
 const strip    = require("gulp-strip-comments"); // https://github.com/RnbWd/gulp-strip-comments
 
 // Optimization
-const uncss    = require("gulp-uncss");    // https://github.com/ben-eb/gulp-uncss
 const svgstore = require("gulp-svgstore"); // https://github.com/w0rm/gulp-svgstore
 
 // Logging
@@ -244,9 +243,6 @@ function buildPartCompileSass() {
 		.pipe(rename({
 			suffix: ".min"
 		}))
-		.pipe(uncss({
-			html: ["dest/**/*.html", "dest/**/*.htm"]
-		}))
 		.pipe(cssnano())
 		.pipe(dest("dest/css"));
 }
@@ -266,9 +262,6 @@ function buildPartConcatCss(done) {
 	if (libsCss.length > 0) {
 		return src(libsCss)
 			.pipe(concat("libs.min.css"))
-			.pipe(uncss({
-				html: ["dest/**/*.html", "dest/**/*.htm"]
-			}))
 			.pipe(cssnano())
 			.pipe(dest("dest/css"))
 	} else {
