@@ -12,3 +12,6 @@ mixin icon(name, modificators)
 		- function modificatorsToString(modificatorsArray) { let ClassesString = ""; for (var ind = 0; ind < modificatorsArray.length; ind++) { ClassesString = ClassesString + " " + modificatorsArray[ind]; }; return ClassesString; };
 		svg(block="icon__" + name mods=modificatorsToString(modificators))
 			use(xlink:href="#icon-" + name)
+
+//Return current time
+- function time() { return new Date().getTime() }
