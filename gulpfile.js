@@ -214,7 +214,7 @@ function watcher() {
 	watch(["app/sass/**/*.{sass,scss}"], sassCompile);
 	watch(["app/**/*.{pug,jade}"], pugCompile);
 	watch(["app/**/*.{html,htm}"]).on("change", browserSync.reload);
-	watch(["app/js/*.js"]).on("change", browserSync.reload);
+	watch(["app/js/**/*.js"]).on("change", browserSync.reload);
 }
 
 function buildPartCompilePug() {
@@ -252,8 +252,8 @@ function buildPartCompileSass() {
 }
 
 function buildPartCommonJs() {
-	log(chalk.cyan("Working with common.js..."));
-	return src("app/js/common.js")
+	log(chalk.cyan("Working with .js files..."));
+	return src("app/js/**/*.js")
 		.pipe(babel({
 			presets: ["@babel/preset-env"]
 		}))
