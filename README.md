@@ -51,7 +51,7 @@
 - Устанавливаем GULP плагины (зависимости):
 (сразу все, ниже можно прочитать про все плагины отдельно)
 
-`npm i -D gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-cheerio gulp-strip-comments gulp-uncss gulp-svgstore fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber gulp-posthtml posthtml-bem`
+`npm i -D gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-cheerio gulp-strip-comments gulp-svgstore fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber gulp-posthtml posthtml-bem`
 
 ## Команды GULP
 
@@ -92,7 +92,7 @@
    - *все в итоге копируется в папку `..dest`*
    - выполяется `clearDest`
    - заново компилируются `.pug` файлы (см `pugCompile`), также минифицируются
-   - заново компилируются `.sass` файлы (см `sassCompile`), также оптимизируются (см. [gulp-uncss](https://github.com/ben-eb/gulp-uncss "gulp-uncss"))
+   - заново компилируются `.sass` файлы (см `sassCompile`), ~~также оптимизируются (см. [gulp-uncss](https://github.com/ben-eb/gulp-uncss "gulp-uncss"))~~
    - транспилируется и оптимизируется (удаляются комментарии - см. [gulp-strip-comments](https://github.com/RnbWd/gulp-strip-comments "gulp-strip-comments")) файл `..app/js/common.js`
    - заново конкатенируются все CSS библиотеки (см. `concatCss`), также оптимизируются (см. [gulp-uncss](https://github.com/ben-eb/gulp-uncss "gulp-uncss"))
    - заново конкатенируются все JS библиотеки (см. `concatCss`)
@@ -138,7 +138,7 @@
 - [gulp-strip-comments](https://github.com/RnbWd/gulp-strip-comments "gulp-strip-comments") - удаляет комментарии из JSON, JavaScript, CSS, HTML и т.д.
 
 **Оптимизация:**
-- [gulp-uncss](https://github.com/ben-eb/gulp-uncss "gulp-uncss") - анализирует HTML код и находит все неиспользуемые и продублированные стили, затем оптимизирует их
+- ~~[gulp-uncss](https://github.com/ben-eb/gulp-uncss "gulp-uncss")~~ - анализирует HTML код и находит все неиспользуемые и продублированные стили, затем оптимизирует их
 - [gulp-svgstore](https://github.com/w0rm/gulp-svgstore "gulp-svgstore") - Объединение SVG файлов в один `<symbol>` элемент
 
 **Линтинг:**
