@@ -60,7 +60,7 @@ let toDeleteApp = ["app/css",
 	"!app/libs",
 	"!app/sass"]; // To clear "app" folder
 let toDeleteDest = ["dest"]; // To clear "dest" folder
-let toDeleteDestOnlyImg = ["dest/img"];
+let toDeleteDestOnlyImg = ["dest/img"]; // To clear "dest" folder and only  deleting images
 let toDeleteDestWithoutImg = toDeleteDestOnlyImg;
 	for (var ind = 0; ind < toDeleteDestWithoutImg.length; ind++) {
 		toDeleteDestWithoutImg[ind] = "!" + toDeleteDestWithoutImg[ind];
