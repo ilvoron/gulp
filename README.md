@@ -6,6 +6,7 @@
 - Используется препроцессор [SASS](https://sass-lang.com "SASS")
 - Используется методология [БЭМ](https://ru.bem.info/ "БЭМ")
    - Используется плагин [posthtml-bem](https://github.com/rajdee/posthtml-bem "posthtml-bem") для более удобного использования [PUG](https://pugjs.org/ "PUG") и [БЭМ](https://ru.bem.info/ "БЭМ")
+- Возможность вкладывать проекты (см. `preferences.json`)
 
 ## Для работы потребуется
 - [Node.js](https://nodejs.org/ "Node.js") - чтобы устанавливать пакеты, в том числе и плагины для GULP
@@ -51,7 +52,7 @@
 - Устанавливаем GULP плагины (зависимости):
 (сразу все, ниже можно прочитать про все плагины отдельно)
 
-`npm i -D gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-cheerio gulp-strip-comments gulp-svgstore fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber gulp-posthtml posthtml-bem`
+`npm i -D gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-cheerio gulp-strip-comments gulp-svgstore fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber gulp-posthtml posthtml-bem exec-sh`
 
 ## Команды GULP
 
@@ -107,6 +108,7 @@
    - минифицируются изображения формата `.png`, `.gif`, `.jpg`, `.jpeg` (см. [gulp-imagemin](https://github.com/sindresorhus/gulp-imagemin "gulp-imagemin"))
    - выполняется `createSprite`
    - все оставшиеся форматы изображений просто копируются
+   - собираются проекты внутри (см. `preferences.json`)
 
 ## Плагины
 Устнавливаются командой `npm i -D <имя пакета>`
@@ -176,3 +178,4 @@
 - ~~[gulp-prompt](https://github.com/Freyskeyd/gulp-prompt#readme "gulp-prompt")~~ - добавляет взаимодействие с GULP через консоль
 - [gulp-posthtml](https://github.com/posthtml/gulp-posthtml "gulp-posthtml") - трансформирует HTML/XML с помощью JS
    - [posthtml-bem](https://github.com/rajdee/posthtml-bem "posthtml-bem") - упрощает использование [БЭМ](https://ru.bem.info/ "БЭМ") в [PUG](https://pugjs.org/ "PUG")
+- [exec-sh](https://github.com/tsertkov/exec-sh "exec-sh") - удобная оболочка для работы с `child_process.spawn` (В проекте используется для сборки внутренних проектов, если таковые есть)
