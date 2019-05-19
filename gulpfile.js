@@ -7,6 +7,11 @@
 // Basic constants
 const { src, dest, series, watch } = require("gulp"); // This is Gulp
 
+const fs            = require("fs");            // This is Node.js
+const path          = require("path");          // This is Node.js
+const child_process = require('child_process'); // This is Node.js
+const argv          = require('yargs').argv;    // This is Node.js
+
 // Compilation
 const pug  = require("gulp-pug");  // https://github.com/gulp-community/gulp-pug
 const sass = require("gulp-sass"); // https://github.com/dlmanning/gulp-sass
@@ -44,37 +49,122 @@ const del          = require("del");                   // https://github.com/sin
 const plumber      = require("gulp-plumber");          // https://github.com/floatdrop/gulp-plumber
 const posthtml     = require("gulp-posthtml");         // https://github.com/posthtml/gulp-posthtml
 const posthtmlBem  = require("posthtml-bem");          // https://github.com/rajdee/posthtml-bem
+const exec         = require("exec-sh");               // https://github.com/tsertkov/exec-sh
 
-// Global options
-// Main file
-let indexFile = "index.html"
+/*----------------*/
+/* Global options */
+/*----------------*/
+
+// Paths to exceptions
+let exceptionsArr = [];
+let projectsArr = [];
+
+let indexFile = "index.html" // Main file
+let baseDir = "app";         // Base directory
+let destDir = "dest";        // Destination directory (when "build")
+let cssSubDir = "css";       // Directory for .css files
+let jsSubDir = "js";         // Directory for .js files
+let imgSubDir = "img";       // Directory for images
+let fontsSubDir = "fonts";   // Directory for fonts
+let sassSubDir = "sass";     // Where all .sass, .scss files are located
+
 // All libs in "app/libs". Use "bower install <package name>"
 let libsCss = []; // CSS libs. Example ["app/libs/bootstrap/dist/css/bootstrap.min.css"]
-let libsJs = []; // JS libs. Example ["app/libs/jquery/dist/jquery.min.js"]
-let toDeleteApp = ["app/css",
-	"app/**/*.{html,htm}",
-	"!app/fonts",
-	"!app/img",
-	"!app/js",
-	"!app/libs",
-	"!app/sass"]; // To clear "app" folder
-let toDeleteDest = ["dest"]; // To clear "dest" folder
-let toDeleteDestOnlyImg = ["dest/img"]; // To clear "dest" folder and only  deleting images
-let toDeleteDestWithoutImg = toDeleteDestOnlyImg;
+let libsJs = [];  // JS libs. Example ["app/libs/jquery/dist/jquery.min.js"]
+
+let toDeleteApp = [baseDir + "/" + cssSubDir,
+	baseDir + "/**/*.{html,htm}",
+	"!" + baseDir + "/" + fontsSubDir,
+	"!" + baseDir + "/" + imgSubDir,
+	"!" + baseDir + "/" + jsSubDir,
+	"!" + baseDir + "/libs",
+	"!" + baseDir + "/" + sassSubDir];                 // To clear "app" folder
+let toDeleteDest = [destDir];                          // To clear "dest" folder
+let toDeleteDestOnlyImg = [destDir + "/" + imgSubDir]; // To clear "dest" folder and only  deleting images
+let toDeleteDestWithoutImg = toDeleteDestOnlyImg;      // To clear "dest" folder without deleting images
 	for (var ind = 0; ind < toDeleteDestWithoutImg.length; ind++) {
 		toDeleteDestWithoutImg[ind] = "!" + toDeleteDestWithoutImg[ind];
 	}
-	toDeleteDestWithoutImg = toDeleteDest.concat(toDeleteDestWithoutImg); // To clear "dest" folder without deleting images
+	toDeleteDestWithoutImg = toDeleteDest.concat(toDeleteDestWithoutImg);
+
+let pugFiles = [baseDir + "/**/[^_]*.{pug,jade}"];                      // Pug files for compile
+let sassFiles = [baseDir + "/" + sassSubDir + "/**/[^_]*.{sass,scss}"]; // Sass files for compile
+let imgFiles = ["png", "gif", "jpg", "jpeg"];                           // Images formats those can be compressed
+
+/*---------------*/
+/* Preprocessing */
+/*---------------*/
+
+const spaceCode = "&nbsp;";
+
+function convertSpaces(str) {
+	try {
+		while (str.indexOf(" ") >= 0) {
+			str = str.replace(" ", spaceCode);
+		}
+	} catch(err) {}
+	return str;
+}
+
+function convertToSpaces(str) {
+	try {
+		while (str.indexOf(spaceCode) >= 0) {
+			str = str.replace(spaceCode, " ");
+		}
+	} catch(err) {}
+	return str;
+}
+
+function deleteApos(str) {
+	try {
+		while (str.indexOf("\"") >= 0) {
+			str = str.replace("\"", "");
+		}
+		while (str.indexOf("'") >= 0) {
+			str = str.replace("'", "");
+		}
+	} catch(err) {}
+	return str;
+}
+
+try {
+	if (fs.existsSync("preferences.json")) {
+		let rawData = fs.readFileSync("preferences.json");
+		let data = JSON.parse(rawData);
+		let excArr = data.projects;
+		for (var ind = 0; ind < excArr.length; ind++) {
+			exceptionsArr.push("!" + baseDir + "/" + String(excArr[ind]) + "/**");
+			exceptionsArr.push("!" + baseDir + "/" + String(excArr[ind]) + "/**/*.*");
+			projectsArr.push(String(excArr[ind]));
+		}
+		excArr = data.exceptions;
+		for (var ind = 0; ind < excArr.length; ind++) {
+			exceptionsArr.push(baseDir + "/" + String(excArr[ind]));
+		}
+	}
+} catch(err) {}
+
+let isCustomDest = false;
+
+try {
+	if (argv.customDest != undefined) {
+		destDir = deleteApos(convertToSpaces(String(argv.customDest)));
+		isCustomDest = true;
+	}
+} catch(err) {}
+
+pugFiles = pugFiles.concat(exceptionsArr);
+sassFiles = sassFiles.concat(exceptionsArr);
 
 /*-----------*/
 /* Functions */
 /*-----------*/
 
 function pugCompile() {
-	return src(["app/**/[^_]*.{pug,jade}"])
+	return src(pugFiles)
 		.pipe(plumber())
 		.pipe(pug({
-			basedir: "app"
+			basedir: baseDir
 		}))
 		.pipe(posthtml([
             posthtmlBem({
@@ -84,20 +174,18 @@ function pugCompile() {
             })
         ]))
 		.pipe(plumber.stop())
-		.pipe(dest("app"));
+		.pipe(dest(baseDir));
 }
 
 function sassCompile() {
-	return src(["app/sass/**/[^_]*.{sass,scss}"])
+	return src(sassFiles)
 		.pipe(plumber())
 		.pipe(sass().on("error", sass.logError))
+		.pipe(concat('style.min.css'))
 		.pipe(autoprefixer(["last 10 versions"]))
-		.pipe(rename({
-			suffix: ".min"
-		}))
 		.pipe(cssnano())
 		.pipe(plumber.stop())
-		.pipe(dest("app/css"))
+		.pipe(dest(baseDir + "/" + cssSubDir))
 		.pipe(browserSync.reload({stream: true}));
 }
 
@@ -108,7 +196,7 @@ function concatCss(done) {
 			.pipe(concat("libs.min.css"))
 			.pipe(cssnano())
 			.pipe(plumber.stop())
-			.pipe(dest("app/css"))
+			.pipe(dest(baseDir + "/" + cssSubDir))
 			.pipe(browserSync.reload({stream: true}));
 	} else {
 		done();
@@ -122,7 +210,7 @@ function concatJs(done) {
 			.pipe(concat("libs.min.js"))
 			.pipe(uglify())
 			.pipe(plumber.stop())
-			.pipe(dest("app/js"));
+			.pipe(dest(baseDir + "/" + jsSubDir));
 	} else {
 		done();
 	}
@@ -130,8 +218,9 @@ function concatJs(done) {
 
 function createSprite() {
 	log(chalk.cyan("Minifying SVG images in one file..."));
-	del.sync("app/img/sprite.svg")
-	return src("app/img/**/*.svg", {
+	let imgFolder = baseDir + "/" + imgSubDir;
+	del.sync(imgFolder + "/sprite.svg")
+	return src([imgFolder + "/**/*.svg"].concat(exceptionsArr), {
 			allowEmpty: true
 		})
 		.pipe(svgmin({
@@ -167,13 +256,13 @@ function createSprite() {
 		.pipe(rename({
 			basename: "sprite"
 		}))
-		.pipe(dest("app/img"));
+		.pipe(dest(imgFolder));
 }
 
 function liveReload() {
 	browserSync.init({
 		server: {
-			baseDir: "app",
+			baseDir: baseDir,
 			index: indexFile
 		},
 		notify: false
@@ -210,18 +299,18 @@ function clearDestOnlyImg(done) {
 
 function watcher() {
 	liveReload();
-	watch(["app/sass/**/*.{sass,scss}"], sassCompile);
-	watch(["app/**/*.{pug,jade}"], pugCompile);
-	watch(["app/**/*.{html,htm}"]).on("change", browserSync.reload);
-	watch(["app/js/**/*.js"]).on("change", browserSync.reload);
+	watch([baseDir + "/" + sassSubDir + "/**/*.{sass,scss}"].concat(exceptionsArr), sassCompile);
+	watch([baseDir + "/**/*.{pug,jade}"].concat(exceptionsArr), pugCompile);
+	watch([baseDir + "/**/*.{html,htm}"].concat(exceptionsArr)).on("change", browserSync.reload);
+	watch([baseDir + "/" + jsSubDir + "/**/*.js"].concat(exceptionsArr)).on("change", browserSync.reload);
 }
 
 function buildPartCompilePug() {
 	log(chalk.cyan("Recompiling PUG..."));
-	return src(["app/**/[^_]*.{pug,jade}"])
+	return src(pugFiles)
 		.pipe(plumber())
 		.pipe(pug({
-			basedir: "app"
+			basedir: baseDir
 		}))
 		.pipe(posthtml([
             posthtmlBem({
@@ -233,29 +322,30 @@ function buildPartCompilePug() {
 		.pipe(htmlmin())
 		.pipe(strip())
 		.pipe(plumber.stop())
-		.pipe(dest("dest"));
+		.pipe(dest(destDir));
 }
 
 function buildPartCompileSass() {
 	log(chalk.cyan("Recompiling SASS..."));
-	return src(["app/sass/**/[^_]*.{sass,scss}"])
+	return src(sassFiles)
 		.pipe(sass().on("error", sass.logError))
+		.pipe(concat('style.min.css'))
 		.pipe(autoprefixer(["last 10 versions"]))
-		.pipe(rename({
-			suffix: ".min"
-		}))
 		.pipe(cssnano())
-		.pipe(dest("dest/css"));
+		.pipe(dest(destDir + "/" + cssSubDir));
 }
 
 function buildPartJs() {
 	log(chalk.cyan("Working with .js files..."));
-	return src("app/js/**/*.js")
+	return src([baseDir + "/" + jsSubDir + "/**/*.js"].concat(exceptionsArr))
 		.pipe(babel({
 			presets: ["@babel/preset-env"]
 		}))
 		.pipe(strip())
-		.pipe(dest("dest/js"));
+		.pipe(rename({
+			suffix: ".min"
+		}))
+		.pipe(dest(destDir + "/" + jsSubDir));
 }
 
 function buildPartConcatCss(done) {
@@ -264,7 +354,7 @@ function buildPartConcatCss(done) {
 		return src(libsCss)
 			.pipe(concat("libs.min.css"))
 			.pipe(cssnano())
-			.pipe(dest("dest/css"))
+			.pipe(dest(destDir + "/" + cssSubDir))
 	} else {
 		done();
 	}
@@ -276,15 +366,19 @@ function buildPartConcatJs(done) {
 		return src(libsJs)
 			.pipe(concat("libs.min.js"))
 			.pipe(uglify())
-			.pipe(dest("dest/js"));
+			.pipe(dest(destDir + "/" + jsSubDir));
 	} else {
 		done();
 	}
 }
 
 function buildPartMinifyBaseImages() {
-	log(chalk.cyan("Minifying images with .png, .gif, .jpg, .jpeg extensions..."));
-	return src("app/img/**/*.{png,gif,jpg,jpeg}", { //svg may be?
+	let tmpArr = imgFiles;
+	for (var ind = 0; ind < tmpArr.length; ind++) {
+		tmpArr[ind] = "." + tmpArr[ind];
+	}
+	log(chalk.cyan("Minifying images with " + tmpArr.join(", ") + " extensions..."));
+	return src([baseDir + "/" + imgSubDir + "/**/*.{" + imgFiles.join(",") + "}"].concat(exceptionsArr), { //svg may be?
 			allowEmpty: true
 		})
 		.pipe(imagemin([
@@ -319,12 +413,12 @@ function buildPartMinifyBaseImages() {
 		], {
 			verbose: true
 		}))
-		.pipe(dest("dest/img"));
+		.pipe(dest(destDir + "/" + imgSubDir));
 }
 
 function buildPartMinifySVG() {
 	log(chalk.cyan("Minifying SVG images in one sprite..."));
-	return src("app/img/**/*.svg", {
+	return src([baseDir + "/" + imgSubDir + "/**/*.svg"].concat(exceptionsArr), {
 			allowEmpty: true
 		})
 		.pipe(svgmin({
@@ -360,31 +454,55 @@ function buildPartMinifySVG() {
 		.pipe(rename({
 			basename: "sprite"
 		}))
-		.pipe(dest("dest/img"));
+		.pipe(dest(destDir + "/" + imgSubDir));
 }
 
 function buildPartCopyOtherImages() {
 	log(chalk.cyan("Copying other images..."));
-	return src(["app/img/**/*.*", "!app/img/**/*.{png,gif,jpg,jpeg,svg}"], {
+	return src([baseDir + "/" + imgSubDir + "/**/*.*", "!" + baseDir + "/" + imgSubDir + "/**/*.{" + imgFiles.concat(["svg"]).join(",") + "}"].concat(exceptionsArr), {
 			allowEmpty: true
 		})
-		.pipe(dest("dest/img"));
+		.pipe(dest(destDir + "/" + imgSubDir));
 }
 
 function buildPartCopyAllImages() {
 	log(chalk.cyan("Copying images..."));
-	return src("app/img/**/*.*", {
+	return src([baseDir + "/" + imgSubDir + "/**/*.*"].concat(exceptionsArr), {
 			allowEmpty: true
 		})
-		.pipe(dest("dest/img"));
+		.pipe(dest(destDir + "/" + imgSubDir));
 }
 
 function buildPartCopyFonts() {
 	log(chalk.cyan("Copying fonts..."));
-	return src("app/fonts", {
+	return src([baseDir + "/" + fontsSubDir].concat(exceptionsArr), {
 		allowEmpty: true
 	})
-	.pipe(dest("dest/"));
+	.pipe(dest(destDir));
+}
+
+function buildPartBuildProjects(done) {
+	log(chalk.cyan("Start building projects inside..."));
+	if (projectsArr.length > 0) {
+		for (var ind = 0; ind < projectsArr.length; ind++) {
+			let customDest = path.join(destDir, projectsArr[ind]);
+			if (isCustomDest == false) {
+				customDest = path.join(process.cwd(), customDest);
+			}
+			exec("gulp build --customDest \"" + convertSpaces(customDest) + "\"", {
+				cwd: path.join(process.cwd(), baseDir, projectsArr[ind])
+			},
+			(err) => {
+				if (err) {
+					log("Exit code: ", err.code);
+				}
+			})
+		}
+		done();
+	} else {
+		log(chalk.cyan("No projects inside found..."));
+		done();
+	}
 }
 
 /*--------------------*/
@@ -410,7 +528,7 @@ exports.clearDestOnlyImg    = clearDestOnlyImg;    // In "dest" folder delete on
 exports.clearAll            = clearAll;            // Deleting unnecessary files and folders in "app" folder. Delete "dest" folder. Clears the cache
 exports.watcher             = watcher;             // Initializing watcher
 
-exports.build           = series(clearDest, build, buildPartMinifyImg);               // Build project and compress images
+exports.build           = series(clearDest, build, buildPartMinifyImg, buildPartBuildProjects);               // Build project and compress images
 exports.buildWithoutImg = series(clearDestWithoutImg, build, buildPartCopyAllImages); // Build project without compress images
 exports.buildOnlyImg    = series(clearDestOnlyImg, buildPartMinifyImg);               // Only compress images
 
