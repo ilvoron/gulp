@@ -342,9 +342,6 @@ function buildPartJs() {
 			presets: ["@babel/preset-env"]
 		}))
 		.pipe(strip())
-		.pipe(rename({
-			suffix: ".min"
-		}))
 		.pipe(dest(destDir + "/" + jsSubDir));
 }
 
