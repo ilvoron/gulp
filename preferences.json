@@ -1,8 +1,3 @@
 {
-	"projects_description": "Insert here paths to projects folders inside this",
-	"projects_example": ["test/VRproject", "games/GameOfTheYear"],
-	"projects": [],
-	"exceptions_description": "Insert here glob options for exceptions",
-	"exceptions_example": ["somefolder/lol.html", "sass/*.*", "**/*.{htm, scss}"],
 	"exceptions": []
 }
