@@ -7,10 +7,8 @@
 // Basic constants
 const { src, dest, series, watch } = require("gulp"); // This is Gulp
 
-const fs            = require("fs");            // This is Node.js
-const path          = require("path");          // This is Node.js
-const child_process = require('child_process'); // This is Node.js
-const argv          = require('yargs').argv;    // This is Node.js
+const fs   = require("fs");         // This is Node.js
+const argv = require('yargs').argv; // This is Node.js
 
 // Compilation
 const pug  = require("gulp-pug");  // https://github.com/gulp-community/gulp-pug
@@ -38,8 +36,8 @@ const strip    = require("gulp-strip-comments"); // https://github.com/RnbWd/gul
 const svgstore = require("gulp-svgstore"); // https://github.com/w0rm/gulp-svgstore
 
 // Logging
-const log   = require("fancy-log");  // https://github.com/gulpjs/fancy-log
-const chalk = require("chalk");      // https://github.com/chalk/chalk
+const log   = require("fancy-log"); // https://github.com/gulpjs/fancy-log
+const chalk = require("chalk");     // https://github.com/chalk/chalk
 
 // Miscellaneous
 const browserSync  = require("browser-sync").create(); // https://browsersync.io
@@ -49,7 +47,6 @@ const del          = require("del");                   // https://github.com/sin
 const plumber      = require("gulp-plumber");          // https://github.com/floatdrop/gulp-plumber
 const posthtml     = require("gulp-posthtml");         // https://github.com/posthtml/gulp-posthtml
 const posthtmlBem  = require("posthtml-bem");          // https://github.com/rajdee/posthtml-bem
-const exec         = require("exec-sh");               // https://github.com/tsertkov/exec-sh
 
 /*----------------*/
 /* Global options */
@@ -57,7 +54,6 @@ const exec         = require("exec-sh");               // https://github.com/tse
 
 // Paths to exceptions
 let exceptionsArr = [];
-let projectsArr = [];
 
 let indexFile = "index.html" // Main file
 let baseDir = "app";         // Base directory
@@ -97,15 +93,6 @@ let imgFiles = ["png", "gif", "jpg", "jpeg"];                           // Image
 
 const spaceCode = "&nbsp;";
 
-function convertSpaces(str) {
-	try {
-		while (str.indexOf(" ") >= 0) {
-			str = str.replace(" ", spaceCode);
-		}
-	} catch(err) {}
-	return str;
-}
-
 function convertToSpaces(str) {
 	try {
 		while (str.indexOf(spaceCode) >= 0) {
@@ -131,25 +118,16 @@ try {
 	if (fs.existsSync("preferences.json")) {
 		let rawData = fs.readFileSync("preferences.json");
 		let data = JSON.parse(rawData);
-		let excArr = data.projects;
-		for (var ind = 0; ind < excArr.length; ind++) {
-			exceptionsArr.push("!" + baseDir + "/" + String(excArr[ind]) + "/**");
-			exceptionsArr.push("!" + baseDir + "/" + String(excArr[ind]) + "/**/*.*");
-			projectsArr.push(String(excArr[ind]));
-		}
-		excArr = data.exceptions;
+		let excArr = data.exceptions;
 		for (var ind = 0; ind < excArr.length; ind++) {
 			exceptionsArr.push(baseDir + "/" + String(excArr[ind]));
 		}
 	}
 } catch(err) {}
 
-let isCustomDest = false;
-
 try {
 	if (argv.customDest != undefined) {
 		destDir = deleteApos(convertToSpaces(String(argv.customDest)));
-		isCustomDest = true;
 	}
 } catch(err) {}
 
@@ -478,30 +456,6 @@ function buildPartCopyFonts() {
 	.pipe(dest(destDir));
 }
 
-function buildPartBuildProjects(done) {
-	log(chalk.cyan("Start building projects inside..."));
-	if (projectsArr.length > 0) {
-		for (var ind = 0; ind < projectsArr.length; ind++) {
-			let customDest = path.join(destDir, projectsArr[ind]);
-			if (isCustomDest == false) {
-				customDest = path.join(process.cwd(), customDest);
-			}
-			exec("gulp build --customDest \"" + convertSpaces(customDest) + "\"", {
-				cwd: path.join(process.cwd(), baseDir, projectsArr[ind])
-			},
-			(err) => {
-				if (err) {
-					log("Exit code: ", err.code);
-				}
-			})
-		}
-		done();
-	} else {
-		log(chalk.cyan("No projects inside found..."));
-		done();
-	}
-}
-
 /*--------------------*/
 /* Register functions */
 /*--------------------*/
@@ -525,7 +479,7 @@ exports.clearDestOnlyImg    = clearDestOnlyImg;    // In "dest" folder delete on
 exports.clearAll            = clearAll;            // Deleting unnecessary files and folders in "app" folder. Delete "dest" folder. Clears the cache
 exports.watcher             = watcher;             // Initializing watcher
 
-exports.build           = series(clearDest, build, buildPartMinifyImg, buildPartBuildProjects);               // Build project and compress images
+exports.build           = series(clearDest, build, buildPartMinifyImg);               // Build project and compress images
 exports.buildWithoutImg = series(clearDestWithoutImg, build, buildPartCopyAllImages); // Build project without compress images
 exports.buildOnlyImg    = series(clearDestOnlyImg, buildPartMinifyImg);               // Only compress images
 
