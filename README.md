@@ -1,12 +1,13 @@
 # Gulp шаблон для Frontend-разработки
 
+**Маленькая утилита [builder](https://github.com/coolpanda02/builder "builder") для сборки проектов из проектов (как бы это странно не звучало). Работает только с этим шаблоном**
+
 ## Особенности
 
 - Используется шаблонизатор [PUG](https://pugjs.org/ "PUG")
 - Используется препроцессор [SASS](https://sass-lang.com "SASS")
 - Используется методология [БЭМ](https://ru.bem.info/ "БЭМ")
    - Используется плагин [posthtml-bem](https://github.com/rajdee/posthtml-bem "posthtml-bem") для более удобного использования [PUG](https://pugjs.org/ "PUG") и [БЭМ](https://ru.bem.info/ "БЭМ")
-- Возможность вкладывать проекты (см. `preferences.json`)
 
 ## Для работы потребуется
 - [Node.js](https://nodejs.org/ "Node.js") - чтобы устанавливать пакеты, в том числе и плагины для GULP
@@ -37,24 +38,22 @@
 
 `npm i -g gulpjs/gulp-cli`
 
-**Теперь для каждого проекта просто создаем папку в которой делаем следующее:**
+**Теперь для проекта просто создаем папку в которой делаем следующее:**
+
+- Скачиваем репозиторий - выполняем в консоли `git clone https://github.com/coolpanda02/gulp` (скачается репозиторий с гитхаба, можно скачать вручную; не забудьте, при скачивании создается отдельная папка, поэтому содержимое от туда перемещаем в рабочую папку)
 
 - Создаем файл package.json:
 
 `npm init`
 
-- Устанавливаем GULP локально:
-
-`npm i -D gulpjs/gulp`
-
-- Если есть доступ к репозиторию, то выполняем в консоли `git clone https://github.com/coolpanda02/gulp` (скачается репозиторий с гитхаба, можно скачать вручную; не забудьте, при скачивании создается отдельная папка, поэтому содержимое от туда перемещаем в рабочую папку)
-
-- Устанавливаем GULP плагины (зависимости):
+- Устанавливаем GULP локально и плагины (зависимости) для него:
 (сразу все, ниже можно прочитать про все плагины отдельно)
 
-`npm i -D gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-cheerio gulp-strip-comments gulp-svgstore fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber gulp-posthtml posthtml-bem exec-sh`
+`npm i -D gulpjs/gulp gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-cheerio gulp-strip-comments gulp-svgstore fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber gulp-posthtml posthtml-bem exec-sh`
 
 ## Команды GULP
+
+**Все опции вы можете настроить в `gulpfile.js`**
 
 **Команды разработки:**
 - При разработке используется только папка `../app`, т.е. все действия с файлами происходят там. При сборке все названия папок и их иерархия остаются такими же
@@ -101,7 +100,6 @@
    - выполняется `createSprite`
    - все оставшиеся форматы изображений просто копируются
    - также копируется папка `..app/fonts`
-   - собираются проекты внутри (см. `preferences.json`)
 - `buildWithoutImg`
    - выполняет все то же, что и `build`, за исключением работы с изображениями (просто копирует папку с изображениями - `..app/img`)
 - `buildOnlyImg`
@@ -179,4 +177,10 @@
 - ~~[gulp-prompt](https://github.com/Freyskeyd/gulp-prompt#readme "gulp-prompt")~~ - добавляет взаимодействие с GULP через консоль
 - [gulp-posthtml](https://github.com/posthtml/gulp-posthtml "gulp-posthtml") - трансформирует HTML/XML с помощью JS
    - [posthtml-bem](https://github.com/rajdee/posthtml-bem "posthtml-bem") - упрощает использование [БЭМ](https://ru.bem.info/ "БЭМ") в [PUG](https://pugjs.org/ "PUG")
-- [exec-sh](https://github.com/tsertkov/exec-sh "exec-sh") - удобная оболочка для работы с `child_process.spawn` (В проекте используется для сборки внутренних проектов, если таковые есть)
+- ~~[exec-sh](https://github.com/tsertkov/exec-sh "exec-sh")~~ - удобная оболочка для работы с `child_process.spawn` (В проекте используется для сборки внутренних проектов, если таковые есть)
+
+## preferences.json
+- ключ `exceptions` - массив строк (string) с иключениями. Все файлы и папки указанные здесь исключаются из обработки вообще. Примеры:
+   - `somefolder/lol.html` - в проекте в папке `somefolder` файл `lol.html` исключить из обработки
+   - `sass/*.*` - в проекте в папке `sass` **все** файлы исключить из обработки
+   - `**/*.{htm, scss}` - в проекте исключить все файлы с расширениями `.htm` и `.scss` из обработки
