@@ -450,10 +450,10 @@ function buildPartCopyAllImages() {
 
 function buildPartCopyFonts() {
 	log(chalk.cyan("Copying fonts..."));
-	return src([baseDir + "/" + fontsSubDir].concat(exceptionsArr), {
+	return src([baseDir + "/" + fontsSubDir + "/**/*.*"].concat(exceptionsArr), {
 		allowEmpty: true
 	})
-	.pipe(dest(destDir));
+	.pipe(dest(destDir + "/" + fontsSubDir));
 }
 
 /*--------------------*/
