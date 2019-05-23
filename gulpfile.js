@@ -148,7 +148,7 @@ function pugCompile() {
             posthtmlBem({
                 elemPrefix: "__",
                 modPrefix: "_",
-                modDlmtr: "-"
+                modDlmtr: "--"
             })
         ]))
 		.pipe(plumber.stop())
@@ -294,7 +294,7 @@ function buildPartCompilePug() {
             posthtmlBem({
                 elemPrefix: "__",
                 modPrefix: "_",
-                modDlmtr: "-"
+                modDlmtr: "--"
             })
 		]))
 		.pipe(htmlmin())
