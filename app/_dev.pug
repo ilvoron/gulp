@@ -6,12 +6,25 @@
 //BEM type: block
 mixin icon(name, modificators)
 	if modificators.length == 0
-		svg(block="icon" mods="icon--" + name)
+		svg(block="icon" mods="icon:" + name)
 			use(xlink:href="#icon-" + name)
 	else
 		- function modificatorsToString(modificatorsArray) { let ClassesString = ""; for (var ind = 0; ind < modificatorsArray.length; ind++) { ClassesString = ClassesString + " " + modificatorsArray[ind]; }; return ClassesString; };
-		svg(block="icon" mods="icon--" + name + " " + modificatorsToString(modificators))
+		svg(block="icon" mods="icon:" + name + " " + modificatorsToString(modificators))
 			use(xlink:href="#icon-" + name)
+
+//Inject empty SVG into page
+//name - file name
+//modificators - BEM methodology
+//BEM type: block
+mixin icon-empty(name, modificators)
+	if modificators.length == 0
+		svg(block="icon" mods="icon-empty icon-empty:" + name)
+			use(xlink:href="#icon-empty-" + name)
+	else
+		- function modificatorsToString(modificatorsArray) { let ClassesString = ""; for (var ind = 0; ind < modificatorsArray.length; ind++) { ClassesString = ClassesString + " " + modificatorsArray[ind]; }; return ClassesString; };
+		svg(block="icon" mods="icon-empty icon-empty:" + name + " " + modificatorsToString(modificators))
+			use(xlink:href="#icon-empty-" + name)
 
 //Return current time
 - function time() { return new Date().getTime() }
