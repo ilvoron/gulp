@@ -65,11 +65,17 @@
 - `concatJs` - конкатенирует все JS библиотеки в один файл `..app/js/libs.min.js` и минифицирует его
    - Пути к библиотекам находятся в файле `..gulpfile.js` в переменной `libsJs`
 - `createSprite` - минифицирует и объединяет все `.svg` файлы, находяещиеся в папке `..app/img`, в один файл `..app/img/sprite.svg` (он автоматически инжектится в страницу, в файле `../app/_dev.pug` (если вы его не удалили) есть миксин для вставки SVG по методологии [БЭМ](https://ru.bem.info "БЭМ"))
-   - `+icon(name, modificators)` - вставить SVG, где `icon` - имя файла, `modificators` - массив модификаторов (см. [БЭМ](https://ru.bem.info "БЭМ"))
+   - `+icon(name, modificators)` - вставить SVG, где `name` - имя файла, `modificators` - массив модификаторов (см. [БЭМ](https://ru.bem.info "БЭМ"))
    - **Например:**
    - `+icon('hamburger', [])` - вставит `<svg class="icon icon_icon--hamburger"><use xlink:href="#icon-hamburger">...</use></svg>`
    - `+icon('school', ['red', 'light'])` - вставит `<svg class="icon icon_icon--school icon_red icon_light"><use xlink:href="#icon-school">...</use></svg>`
    - `+icon('facebook', ['green', 'size_big'])` - вставит `<svg class="icon icon_icon--facebook icon_green icon_size_big"><use xlink:href="#icon-facebook">...</use></svg>`
+- `createSpriteEmpty` - аналогичен `createSprite`, разве что удаляет атрибуты `style`, `fill` и `stroke` из файлов, для того чтобы они не перебивали стили, заданные через css
+   - `+icon-empty(name, modificators)` - вставить SVG, где `name` - имя файла, `modificators` - массив модификаторов (см. [БЭМ](https://ru.bem.info "БЭМ"))
+   - **Например:**
+   - `+icon-empty('hamburger', [])` - вставит `<svg class="icon icon_icon-empty icon_icon-empty--hamburger"><use xlink:href="#icon-empty-hamburger">...</use></svg>`
+   - `+icon-empty('school', ['red', 'light'])` - вставит `<svg class="icon icon_icon-empty icon_icon-empty--school icon_red icon_light"><use xlink:href="#icon-empty-school">...</use></svg>`
+   - `+icon-empty('facebook', ['green', 'size_big'])` - вставит `<svg class="icon icon_icon-empty icon_icon-empty--facebook icon_green icon_size_big"><use xlink:href="#icon-empty-facebook">...</use></svg>`
 - `liveReload` - инициализация локального сервера и синхронизации с браузером
    - в файл `..gulpfile.js` есть переменная `indexFile` (по умолчанию `indexFile = 'index.html'`), которая управляет главной страницей сайта при инициализации локального сервера
 - `clearApp` - удаляет папку `..app/css` и все файлы по шаблону `..app/**/*.{html,htm}`
@@ -97,7 +103,7 @@
    - заново конкатенируются все CSS библиотеки (см. `concatCss`), также оптимизируются (см. [gulp-uncss](https://github.com/ben-eb/gulp-uncss "gulp-uncss"))
    - заново конкатенируются все JS библиотеки (см. `concatCss`)
    - минифицируются изображения формата `.png`, `.gif`, `.jpg`, `.jpeg` (см. [gulp-imagemin](https://github.com/sindresorhus/gulp-imagemin "gulp-imagemin"))
-   - выполняется `createSprite`
+   - выполняется `createSprite`, `createSpriteEmpty`
    - все оставшиеся форматы изображений просто копируются
    - также копируется папка `..app/fonts`
 - `buildWithoutImg`
@@ -105,7 +111,7 @@
 - `buildOnlyImg`
    - выполняет только работу с изображениями, т.е.:
    - минифицируются изображения формата `.png`, `.gif`, `.jpg`, `.jpeg` (см. [gulp-imagemin](https://github.com/sindresorhus/gulp-imagemin "gulp-imagemin"))
-   - выполняется `createSprite`
+   - выполняется `createSprite`, `createSpriteEmpty`
    - все оставшиеся форматы изображений просто копируются
 - `--customDest <значение>` - ключ. Позволяет задать папку сборки проекта
 
