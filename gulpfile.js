@@ -47,6 +47,7 @@ const del          = require("del");                   // https://github.com/sin
 const plumber      = require("gulp-plumber");          // https://github.com/floatdrop/gulp-plumber
 const posthtml     = require("gulp-posthtml");         // https://github.com/posthtml/gulp-posthtml
 const posthtmlBem  = require("posthtml-bem");          // https://github.com/rajdee/posthtml-bem
+const replace      = require("gulp-replace");          // https://github.com/lazd/gulp-replace
 
 /*----------------*/
 /* Global options */
@@ -233,6 +234,53 @@ function createSprite() {
 		}))
 		.pipe(rename({
 			basename: "sprite"
+		}))
+		.pipe(dest(imgFolder));
+}
+
+function createSpriteEmpty() {
+	log(chalk.cyan("Minifying SVG images in one file (creating empty sprites)..."));
+	let imgFolder = baseDir + "/" + imgSubDir;
+	del.sync(imgFolder + "/sprite_empty.svg")
+	return src([imgFolder + "/**/*.svg"].concat(exceptionsArr), {
+			allowEmpty: true
+		})
+		.pipe(svgmin({
+			plugins: [
+				{removeStyleElement: true},
+				{removeTitle: true},
+				{removeDesc: true},
+				{removeUselessDefs: true},
+				{removeDimensions: true},
+				{removeRasterImages: true},
+				{collapseGroups: true},
+				{cleanupNumericValues: {
+						floatPrecision: 1
+					}},
+				{cleanupIDs: true},
+				{removeEmptyContainers: true},
+				{removeEmptyAttrs: true},
+				{cleanupAttrs: true}
+			]
+		}))
+		.pipe(rename({
+			prefix: "icon-empty-"
+		}))
+		.pipe(svgstore())
+		.pipe(cheerio({
+			run: function ($) {
+				$("[fill]").removeAttr("fill");
+				$("[stroke]").removeAttr("stroke");
+				$("[style]").removeAttr("style");
+				$("svg").attr("style",  "display:none");
+			},
+			parserOptions: {
+				xmlMode: true
+			}
+		}))
+		.pipe(replace("&gt;", ">"))
+		.pipe(rename({
+			basename: "sprite-empty"
 		}))
 		.pipe(dest(imgFolder));
 }
@@ -432,6 +480,51 @@ function buildPartMinifySVG() {
 		.pipe(dest(destDir + "/" + imgSubDir));
 }
 
+function buildPartMinifySVGEmpty() {
+	log(chalk.cyan("Minifying SVG images in one sprite (creating empty sprites)..."));
+	return src([baseDir + "/" + imgSubDir + "/**/*.svg"].concat(exceptionsArr), {
+			allowEmpty: true
+		})
+		.pipe(svgmin({
+			plugins: [
+				{removeStyleElement: true},
+				{removeTitle: true},
+				{removeDesc: true},
+				{removeUselessDefs: true},
+				{removeDimensions: true},
+				{removeRasterImages: true},
+				{collapseGroups: true},
+				{cleanupNumericValues: {
+						floatPrecision: 1
+					}},
+				{cleanupIDs: true},
+				{removeEmptyContainers: true},
+				{removeEmptyAttrs: true},
+				{cleanupAttrs: true}
+			]
+		}))
+		.pipe(rename({
+			prefix: "icon-empty-"
+		}))
+		.pipe(svgstore())
+		.pipe(cheerio({
+			run: function ($) {
+				$("[fill]").removeAttr("fill");
+				$("[stroke]").removeAttr("stroke");
+				$("[style]").removeAttr("style");
+				$("svg").attr("style",  "display:none");
+			},
+			parserOptions: {
+				xmlMode: true
+			}
+		}))
+		.pipe(replace("&gt;", ">"))
+		.pipe(rename({
+			basename: "sprite-empty"
+		}))
+		.pipe(dest(destDir + "/" + imgSubDir));
+}
+
 function buildPartCopyOtherImages() {
 	log(chalk.cyan("Copying other images..."));
 	return src([baseDir + "/" + imgSubDir + "/**/*.*", "!" + baseDir + "/" + imgSubDir + "/**/*.{" + imgFiles.concat(["svg"]).join(",") + "}"].concat(exceptionsArr), {
@@ -463,14 +556,15 @@ function buildPartCopyFonts() {
 // Templates
 let clearAll           = series(clearApp, clearDest);
 let build              = series(buildPartCompilePug, buildPartCompileSass, buildPartJs, buildPartConcatCss, buildPartConcatJs, buildPartCopyFonts);
-let buildPartMinifyImg = series(buildPartMinifyBaseImages, buildPartMinifySVG, buildPartCopyOtherImages)
+let buildPartMinifyImg = series(buildPartMinifyBaseImages, buildPartMinifySVG, buildPartMinifySVGEmpty, buildPartCopyOtherImages)
 
-exports.pugCompile   = pugCompile;   // Compile .pug files 
-exports.sassCompile  = sassCompile;  // Compile .sass files, concatenate and minify
-exports.concatCss    = concatCss;    // Concatenate css libs and minify
-exports.concatJs     = concatJs;     // Concatenate js libs and minify
-exports.createSprite = createSprite; // Create SVG sprite
-exports.liveReload   = liveReload;   // Initializing browser synchronization
+exports.pugCompile        = pugCompile;        // Compile .pug files 
+exports.sassCompile       = sassCompile;       // Compile .sass files, concatenate and minify
+exports.concatCss         = concatCss;         // Concatenate css libs and minify
+exports.concatJs          = concatJs;          // Concatenate js libs and minify
+exports.createSprite      = createSprite;      // Create SVG sprite
+exports.createSpriteEmpty = createSpriteEmpty; // Create SVG sprite
+exports.liveReload        = liveReload;        // Initializing browser synchronization
 
 exports.clearApp            = clearApp;            // Deleting unnecessary files and folders in "app" folder
 exports.clearDest           = clearDest;           // Delete "dest" folder
@@ -484,4 +578,4 @@ exports.buildWithoutImg = series(clearDestWithoutImg, build, buildPartCopyAllIma
 exports.buildOnlyImg    = series(clearDestOnlyImg, buildPartMinifyImg);               // Only compress images
 
 // As default development mode starts
-exports.default = series(clearAll, sassCompile, pugCompile, concatCss, concatJs, createSprite, watcher);
+exports.default = series(clearAll, sassCompile, pugCompile, concatCss, concatJs, createSprite, createSpriteEmpty, watcher);
