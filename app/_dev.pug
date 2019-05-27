@@ -6,11 +6,11 @@
 //BEM type: block
 mixin icon(name, modificators)
 	if modificators.length == 0
-		svg(block="icon__" + name)
+		svg(block="icon" mods="icon--" + name)
 			use(xlink:href="#icon-" + name)
 	else
 		- function modificatorsToString(modificatorsArray) { let ClassesString = ""; for (var ind = 0; ind < modificatorsArray.length; ind++) { ClassesString = ClassesString + " " + modificatorsArray[ind]; }; return ClassesString; };
-		svg(block="icon__" + name mods=modificatorsToString(modificators))
+		svg(block="icon" mods="icon--" + name + " " + modificatorsToString(modificators))
 			use(xlink:href="#icon-" + name)
 
 //Return current time
