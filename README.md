@@ -67,9 +67,9 @@
 - `createSprite` - минифицирует и объединяет все `.svg` файлы, находяещиеся в папке `..app/img`, в один файл `..app/img/sprite.svg` (он автоматически инжектится в страницу, в файле `../app/_dev.pug` (если вы его не удалили) есть миксин для вставки SVG по методологии [БЭМ](https://ru.bem.info "БЭМ"))
    - `+icon(name, modificators)` - вставить SVG, где `icon` - имя файла, `modificators` - массив модификаторов (см. [БЭМ](https://ru.bem.info "БЭМ"))
    - **Например:**
-   - `+icon('hamburger', [])` - вставит `<svg class="icon__hamburger"><use xlink:href="#icon-hamburger"></use></svg>`
-   - `+icon('school', ['red', 'light'])` - вставит `<svg class="icon__school icon__school_red icon__school_light"><use xlink:href="#icon-hamburger"></use></svg>`
-   - `+icon('facebook', ['green', 'size_big'])` - вставит `<svg class="icon__facebook icon__facebook_green icon__facebook_size_big"><use xlink:href="#icon-hamburger"></use></svg>`
+   - `+icon('hamburger', [])` - вставит `<svg class="icon icon_icon--hamburger"><use xlink:href="#icon-hamburger">...</use></svg>`
+   - `+icon('school', ['red', 'light'])` - вставит `<svg class="icon icon_icon--school icon_red icon_light"><use xlink:href="#icon-school">...</use></svg>`
+   - `+icon('facebook', ['green', 'size_big'])` - вставит `<svg class="icon icon_icon--facebook icon_green icon_size_big"><use xlink:href="#icon-facebook">...</use></svg>`
 - `liveReload` - инициализация локального сервера и синхронизации с браузером
    - в файл `..gulpfile.js` есть переменная `indexFile` (по умолчанию `indexFile = 'index.html'`), которая управляет главной страницей сайта при инициализации локального сервера
 - `clearApp` - удаляет папку `..app/css` и все файлы по шаблону `..app/**/*.{html,htm}`
