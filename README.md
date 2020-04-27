@@ -173,7 +173,7 @@
 - ~~[gulp-html-beautify](https://github.com/colynb/gulp-html-prettify "gulp-html-beautify")~~ - делает структуру HTML красивой
 
 **Разное:**
-- [browser-sync](https://browsersync.io "browser-sync") - создает подключение, после чего производит автообновление страницы во всех браузерах на всех устройствах при изменениями не только клиентских или даже серверных файлов. Плюс ко всему синхронизирует позицию скроллинга и заполненные данные в формах.
+- [browser-sync](https://browsersync.io "browser-sync") - создает подключение, после чего производит автообновление страницы во всех браузерах на всех устройствах при изменениями не только клиентских, но и серверных файлов. Плюс ко всему синхронизирует позицию скроллинга и заполненные данные в формах.
 - [bower](https://bower.io "bower") - менеджер пакетов. Позволяет устанавливать в проект различные библиотеки (пакеты) одной командой (JQuery, Bootstrap, Font Awesome и т.д.)
 - [gulp-autoprefixer](https://github.com/sindresorhus/gulp-autoprefixer "gulp-autoprefixer") - автоматически расставляет префиксы к CSS свойствам, исходя из статистики [caniuse](https://caniuse.com "Can i use... Support tables for HTML5, CSS3, etc")
 - [gulp-rename](https://github.com/hparra/gulp-rename "gulp-rename") - переименовывание файлов
