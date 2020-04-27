@@ -64,6 +64,7 @@ let jsSubDir = "js";         // Directory for .js files
 let imgSubDir = "img";       // Directory for images
 let fontsSubDir = "fonts";   // Directory for fonts
 let sassSubDir = "sass";     // Where all .sass, .scss files are located
+let libsDir = "libs";        // Where all libs are located (see ".bowerrc" too) -- using ONLY for "build"
 
 // All libs in "app/libs". Use "bower install <package name>"
 let libsCss = []; // CSS libs. Example ["app/libs/bootstrap/dist/css/bootstrap.min.css"]
@@ -74,7 +75,7 @@ let toDeleteApp = [baseDir + "/" + cssSubDir,
 	"!" + baseDir + "/" + fontsSubDir,
 	"!" + baseDir + "/" + imgSubDir,
 	"!" + baseDir + "/" + jsSubDir,
-	"!" + baseDir + "/libs",
+	"!" + baseDir + "/" + libsDir,
 	"!" + baseDir + "/" + sassSubDir];                 // To clear "app" folder
 let toDeleteDest = [destDir];                          // To clear "dest" folder
 let toDeleteDestOnlyImg = [destDir + "/" + imgSubDir]; // To clear "dest" folder and only  deleting images
@@ -87,6 +88,7 @@ let toDeleteDestWithoutImg = toDeleteDestOnlyImg;      // To clear "dest" folder
 let pugFiles = [baseDir + "/**/[^_]*.{pug,jade}"];                      // Pug files for compile
 let sassFiles = [baseDir + "/" + sassSubDir + "/**/[^_]*.{sass,scss}"]; // Sass files for compile
 let imgFiles = ["png", "gif", "jpg", "jpeg"];                           // Images formats those can be compressed
+let buildFilter = ["!" + baseDir + "/**/*.{pug,jade,sass,scss}"]        // Gulp filter for copying files when "build"
 
 /*---------------*/
 /* Preprocessing */
@@ -121,7 +123,7 @@ try {
 		let data = JSON.parse(rawData);
 		let excArr = data.exceptions;
 		for (var ind = 0; ind < excArr.length; ind++) {
-			exceptionsArr.push(baseDir + "/" + String(excArr[ind]));
+			exceptionsArr.push("!" + baseDir + "/" + String(excArr[ind]));
 		}
 	}
 } catch(err) {}
@@ -427,7 +429,7 @@ function buildPartMinifyBaseImages() {
 					removeViewBox: false
 				}]
 			}), */
-			imagemin.jpegtran({
+			imagemin.mozjpeg({
 				progressive: true
 			}),
 			mozjpeg({
@@ -549,13 +551,44 @@ function buildPartCopyFonts() {
 	.pipe(dest(destDir + "/" + fontsSubDir));
 }
 
+function buildPartCopyOtherFilesAndFolders() {
+	log(chalk.cyan("Copying other files and folders"));
+	let notCopyingPugFiles = [];
+	pugFiles.forEach((elem) => {elem[0] == "!" ? notCopyingPugFiles.push(elem) : notCopyingPugFiles.push("!" + elem)});
+	let notCopyingSassFiles = [];
+	sassFiles.forEach((elem) => {elem[0] == "!" ? notCopyingSassFiles.push(elem) : notCopyingSassFiles.push("!" + elem)});
+	return src([baseDir + "/**/*"].concat(exceptionsArr.concat([
+		"!" + baseDir + "/" + cssSubDir,
+		"!" + baseDir + "/" + cssSubDir + "/**/*",
+		"!" + baseDir + "/" + cssSubDir + "/**/*.*",
+		"!" + baseDir + "/" + jsSubDir,
+		"!" + baseDir + "/" + jsSubDir + "/**/*",
+		"!" + baseDir + "/" + jsSubDir + "/**/*.*",
+		"!" + baseDir + "/" + imgSubDir,
+		"!" + baseDir + "/" + imgSubDir + "/**/*",
+		"!" + baseDir + "/" + imgSubDir + "/**/*.*",
+		"!" + baseDir + "/" + fontsSubDir,
+		"!" + baseDir + "/" + fontsSubDir + "/**/*",
+		"!" + baseDir + "/" + fontsSubDir + "/**/*.*",
+		"!" + baseDir + "/" + sassSubDir,
+		"!" + baseDir + "/" + sassSubDir + "/**/*",
+		"!" + baseDir + "/" + sassSubDir + "/**/*.*",
+		"!" + baseDir + "/" + libsDir,
+		"!" + baseDir + "/" + libsDir + "/**/*",
+		"!" + baseDir + "/" + libsDir + "/**/*.*",
+	]).concat(notCopyingPugFiles).concat(notCopyingSassFiles).concat(buildFilter)), {
+		allowEmpty: true
+	})
+	.pipe(dest(destDir));
+}
+
 /*--------------------*/
 /* Register functions */
 /*--------------------*/
 
 // Templates
 let clearAll           = series(clearApp, clearDest);
-let build              = series(buildPartCompilePug, buildPartCompileSass, buildPartJs, buildPartConcatCss, buildPartConcatJs, buildPartCopyFonts);
+let build              = series(buildPartCompilePug, buildPartCompileSass, buildPartJs, buildPartConcatCss, buildPartConcatJs, buildPartCopyFonts, buildPartCopyOtherFilesAndFolders);
 let buildPartMinifyImg = series(buildPartMinifyBaseImages, buildPartMinifySVG, buildPartMinifySVGEmpty, buildPartCopyOtherImages)
 
 exports.pugCompile        = pugCompile;        // Compile .pug files 
