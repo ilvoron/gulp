@@ -49,7 +49,7 @@
 - Устанавливаем GULP локально и плагины (зависимости) для него:
 (сразу все, ниже можно прочитать про все плагины отдельно)
 
-`npm i -D gulpjs/gulp gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-cheerio gulp-strip-comments gulp-svgstore fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber gulp-posthtml posthtml-bem exec-sh`
+`npm i -D gulpjs/gulp gulp-replace gulp-pug gulp-sass gulp-babel @babel/core @babel/preset-env gulp-concat gulp-cssnano gulp-htmlmin gulp-uglify gulp-imagemin imagemin-pngquant imagemin-mozjpeg imagemin-zopfli gulp-svgmin gulp-cheerio gulp-strip-comments gulp-svgstore fancy-log chalk browser-sync bower gulp-autoprefixer gulp-rename del gulp-plumber gulp-posthtml posthtml-bem exec-sh`
 
 ## Команды GULP
 
