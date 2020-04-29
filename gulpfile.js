@@ -167,7 +167,6 @@ function sassCompile() {
 		.pipe(cssnano())
 		.pipe(plumber.stop())
 		.pipe(dest(baseDir + "/" + cssSubDir))
-		.pipe(browserSync.reload({stream: true}));
 }
 
 function concatCss(done) {
@@ -178,7 +177,6 @@ function concatCss(done) {
 			.pipe(cssnano())
 			.pipe(plumber.stop())
 			.pipe(dest(baseDir + "/" + cssSubDir))
-			.pipe(browserSync.reload({stream: true}));
 	} else {
 		done();
 	}
@@ -291,10 +289,12 @@ function liveReload() {
 	browserSync.init({
 		server: {
 			baseDir: baseDir,
-			index: indexFile
+			index: indexFile,
 		},
-		notify: false
-	})
+		notify: false,
+		watch: true,
+		files: [baseDir + "/**/*.{html,htm}", baseDir + "/" + sassSubDir + "/**/*.{sass,scss}", baseDir + "/" + jsSubDir + "/**/*.js"]
+	});
 }
 
 /*-------------------------------------*/
@@ -329,8 +329,6 @@ function watcher() {
 	liveReload();
 	watch([baseDir + "/" + sassSubDir + "/**/*.{sass,scss}"].concat(exceptionsArr), sassCompile);
 	watch([baseDir + "/**/*.{pug,jade}"].concat(exceptionsArr), pugCompile);
-	watch([baseDir + "/**/*.{html,htm}"].concat(exceptionsArr)).on("change", browserSync.reload);
-	watch([baseDir + "/" + jsSubDir + "/**/*.js"].concat(exceptionsArr)).on("change", browserSync.reload);
 }
 
 function buildPartCompilePug() {
