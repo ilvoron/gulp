@@ -1,4 +1,6 @@
-> Outdated
+# DEPRECATED
+
+[No Maintenance Intended](https://img.shields.io/maintenance/no/2020.svg)
 
 # Gulp шаблон для Frontend-разработки
 
